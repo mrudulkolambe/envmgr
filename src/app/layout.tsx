@@ -24,7 +24,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var t = localStorage.getItem('theme');
+                var m = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var isDark = t ? t === 'dark' : m;
+                var root = document.documentElement;
+                if (isDark) root.classList.add('dark'); else root.classList.remove('dark');
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <ClerkProvider signInForceRedirectUrl="/dashboard" appearance={{
         layout: {
           unsafe_disableDevelopmentModeWarnings: true,

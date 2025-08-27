@@ -24,11 +24,11 @@ export function ImportDialog({ onImport, disabled }: ImportDialogProps) {
           Import
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Import .env</DialogTitle>
         </DialogHeader>
-        <div className="space-y-2">
+        <div className="space-y-2 flex-1 overflow-hidden">
           <Label htmlFor="env-text">Paste .env content</Label>
           <Textarea
             id="env-text"
@@ -36,6 +36,7 @@ export function ImportDialog({ onImport, disabled }: ImportDialogProps) {
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={10}
+            className="resize-none overflow-auto max-h-[300px] w-full"
           />
         </div>
         <DialogFooter>

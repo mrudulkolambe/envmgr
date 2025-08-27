@@ -34,6 +34,7 @@ const STATUS_TONE: Record<EnvironmentStatus, string> = {
 
 interface EnvironmentPanelProps {
   selectedProject: Project | null;
+  environments: Environment[];
   selectedEnvId: number | null;
   onEnvSelect: (envId: number) => void;
   onAddEnvironment: (env: { name: string; type: EnvironmentType; status: EnvironmentStatus }) => void;
@@ -43,6 +44,7 @@ interface EnvironmentPanelProps {
 
 export function EnvironmentPanel({ 
   selectedProject, 
+  environments,
   selectedEnvId, 
   onEnvSelect, 
   onAddEnvironment,
@@ -66,12 +68,12 @@ export function EnvironmentPanel({
   };
 
   return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="font-medium">Environments</div>
+    <Card className="p-4 h-full flex flex-col shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-semibold text-lg tracking-tight">Environments</h2>
         <Dialog open={isNewEnvOpen} onOpenChange={setIsNewEnvOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2 rounded-md shadow-sm">
               <Plus className="size-4" />
               New Environment
             </Button>
@@ -90,14 +92,14 @@ export function EnvironmentPanel({
                   onChange={(e) => setNewEnv((s) => ({ ...s, name: e.target.value }))}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2 w-full">
                   <Label>Type</Label>
                   <Select value={newEnv.type} onValueChange={(v) => setNewEnv((s) => ({ ...s, type: v as EnvironmentType }))}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='w-full'>
                       <SelectItem value="prod">Production</SelectItem>
                       <SelectItem value="stage">Staging</SelectItem>
                       <SelectItem value="dev">Development</SelectItem>
@@ -105,16 +107,16 @@ export function EnvironmentPanel({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 w-full">
                   <Label>Status</Label>
                   <Select
                     value={newEnv.status}
                     onValueChange={(v) => setNewEnv((s) => ({ ...s, status: v as EnvironmentStatus }))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='w-full'>
                       <SelectItem value="active">Active</SelectItem>
                       <SelectItem value="inactive">Inactive</SelectItem>
                       <SelectItem value="maintenance">Maintenance</SelectItem>
@@ -135,35 +137,49 @@ export function EnvironmentPanel({
         </Dialog>
       </div>
 
-      <div className="space-y-2">
-        {selectedProject?.environments.map((env) => {
-          const active = env.id === selectedEnvId;
-          return (
-            <button
-              key={env.id}
-              onClick={() => onEnvSelect(env.id)}
-              className={cn(
-                'w-full rounded-md border px-3 py-2 text-left hover:bg-accent/50 transition',
-                active && 'border-primary/50 bg-accent'
-              )}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Badge className={cn('rounded-sm', ENV_TYPE_TONE[env.type])}>{ENV_TYPE_LABEL[env.type]}</Badge>
-                  <span className="font-medium truncate">{env.name}</span>
+      <div className="flex-1 overflow-auto space-y-2">
+        {environments.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <div className="w-12 h-12 mx-auto mb-3 bg-muted rounded-lg flex items-center justify-center">
+              <Plus className="w-6 h-6" />
+            </div>
+            <p className="text-sm">No environments yet</p>
+            <p className="text-xs">Create your first environment to get started</p>
+          </div>
+        ) : (
+          environments.map((env) => {
+            const active = env.id === selectedEnvId;
+            return (
+              <button
+                key={env.id}
+                onClick={() => onEnvSelect(env.id)}
+                className={cn(
+                  'w-full rounded-md border px-3 py-2.5 text-left transition-all duration-200 group shadow-sm',
+                  active 
+                    ? 'border-primary bg-primary/5 text-primary shadow-md' 
+                    : 'border-border hover:bg-accent hover:text-accent-foreground hover:shadow-md'
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Badge className={cn('rounded-md text-xs', ENV_TYPE_TONE[env.type])}>
+                      {ENV_TYPE_LABEL[env.type]}
+                    </Badge>
+                    <span className="font-medium truncate">{env.name}</span>
+                  </div>
+                  <div 
+                    className={cn('w-2.5 h-2.5 rounded-full', {
+                      'bg-emerald-500': env.status === 'active',
+                      'bg-zinc-400': env.status === 'inactive', 
+                      'bg-orange-500': env.status === 'maintenance'
+                    })}
+                    title={env.status}
+                  />
                 </div>
-                <div 
-                  className={cn('w-3 h-3 rounded-full', {
-                    'bg-emerald-500': env.status === 'active',
-                    'bg-zinc-400': env.status === 'inactive', 
-                    'bg-orange-500': env.status === 'maintenance'
-                  })}
-                  title={env.status}
-                />
-              </div>
-            </button>
-          );
-        })}
+              </button>
+            );
+          })
+        )}
       </div>
     </Card>
   );
