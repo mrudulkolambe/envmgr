@@ -1,0 +1,329 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EnvMgr API",
+    "version": "1.0.0",
+    "description": "Environment Manager API Documentation"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API Base URL"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "SessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session_token",
+        "description": "HTTP-only session cookie"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "CLI Token",
+        "description": "CLI token authentication"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string", "enum": ["user", "admin"] },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "createdBy": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "organizationId": { "type": "string" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "description": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Environment": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "projectId": { "type": "string" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "EnvVariable": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" },
+          "value": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "userId": { "type": "string" },
+          "type": { "type": "string", "enum": ["session", "cli"] },
+          "name": { "type": "string", "nullable": true },
+          "ipAddress": { "type": "string", "nullable": true },
+          "userAgent": { "type": "string", "nullable": true },
+          "lastUsedAt": { "type": "string", "format": "date-time", "nullable": true },
+          "expiresAt": { "type": "string", "format": "date-time", "nullable": true },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "error": { "type": "string" }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign Up",
+        "description": "Create a new user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" },
+                  "password": { "type": "string", "minLength": 8, "example": "strongpassword" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created" },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login",
+        "description": "Authenticate user and create a session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" },
+                  "password": { "type": "string", "example": "strongpassword" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Logout",
+        "security": [{ "SessionAuth": [] }],
+        "responses": { "200": { "description": "Logged out" } }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get Current User",
+        "security": [{ "SessionAuth": [] }],
+        "responses": { "200": { "description": "User data retrieved" } }
+      }
+    },
+    "/orgs": {
+      "get": {
+        "tags": ["Organizations"],
+        "summary": "List User Organizations",
+        "security": [{ "SessionAuth": [] }, { "BearerAuth": [] }],
+        "responses": { "200": { "description": "Organizations list" } }
+      },
+      "post": {
+        "tags": ["Organizations"],
+        "summary": "Create Organization",
+        "security": [{ "SessionAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" } } }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Org created" } }
+      }
+    },
+    "/orgs/{orgId}": {
+      "get": {
+        "tags": ["Organizations"],
+        "summary": "Get Org Details",
+        "parameters": [{ "name": "orgId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Org details" } }
+      }
+    },
+    "/orgs/{orgId}/projects": {
+      "get": {
+        "tags": ["Projects"],
+        "summary": "List Projects (Org)",
+        "parameters": [{ "name": "orgId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Projects list" } }
+      },
+      "post": {
+        "tags": ["Projects"],
+        "summary": "Create Project",
+        "parameters": [{ "name": "orgId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" }, "description": { "type": "string" } } }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Project created" } }
+      }
+    },
+    "/projects/{projectId}": {
+      "get": {
+        "tags": ["Projects"],
+        "summary": "Get Project",
+        "parameters": [{ "name": "projectId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Project details" } }
+      }
+    },
+    "/projects/{projectId}/environments": {
+      "get": {
+        "tags": ["Environments"],
+        "summary": "List Environments",
+        "parameters": [{ "name": "projectId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Envs list" } }
+      },
+      "post": {
+        "tags": ["Environments"],
+        "summary": "Create Environment",
+        "parameters": [{ "name": "projectId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["name", "slug"], "properties": { "name": { "type": "string" }, "slug": { "type": "string" } } }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Env created" } }
+      }
+    },
+    "/environments/{envId}/variables": {
+      "get": {
+        "tags": ["Environment Variables"],
+        "summary": "List Variables",
+        "parameters": [{ "name": "envId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Variables list" } }
+      },
+      "put": {
+        "tags": ["Environment Variables"],
+        "summary": "Bulk Upsert",
+        "parameters": [{ "name": "envId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["variables"], "properties": { "variables": { "type": "object", "additionalProperties": { "type": "string" } } } }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Updated" } }
+      }
+    },
+    "/environments/{envId}/variables/replace": {
+      "post": {
+        "tags": ["Environment Variables"],
+        "summary": "Bulk Replace",
+        "parameters": [{ "name": "envId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["variables"], "properties": { "variables": { "type": "object", "additionalProperties": { "type": "string" } } } }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Replaced" } }
+      }
+    }
+  }
+}
