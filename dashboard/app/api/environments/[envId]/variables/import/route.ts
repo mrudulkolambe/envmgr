@@ -30,12 +30,14 @@ async function validateAccess(req: NextRequest, envId: string) {
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
-    const { user, environment, error } = await validateAccess(req, params.envId);
+    const { user, environment, error } = await validateAccess(req, envId);
     if (error) return error;
+
 
     const dotenvContent = await req.text();
     const lines = dotenvContent.split('\n');
@@ -65,7 +67,8 @@ export async function POST(
       const encryptedValue = encrypt(String(value));
 
       await EnvVariable.findOneAndUpdate(
-        { environmentId: params.envId, key: key },
+        { environmentId: envId, key: key },
+
         { 
           projectId: environment!.projectId,
           value: encryptedValue,

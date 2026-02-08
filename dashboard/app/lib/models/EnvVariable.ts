@@ -17,14 +17,14 @@ const EnvVariableSchema = new Schema<IEnvVariable>(
       type: Schema.Types.ObjectId,
       ref: 'Project',
       required: [true, 'Project ID is required'],
-      index: true,
     },
+
     environmentId: {
       type: Schema.Types.ObjectId,
       ref: 'Environment',
       required: [true, 'Environment ID is required'],
-      index: true,
     },
+
     key: {
       type: String,
       required: [true, 'Variable key is required'],
@@ -54,6 +54,7 @@ const EnvVariableSchema = new Schema<IEnvVariable>(
 
 EnvVariableSchema.index({ environmentId: 1, key: 1 }, { unique: true });
 EnvVariableSchema.index({ projectId: 1 });
+
 
 EnvVariableSchema.statics = {
   findByEnvironment: async function (environmentId: string) {

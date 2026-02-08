@@ -18,16 +18,16 @@ const InvitationSchema = new Schema<IInvitation>(
       type: Schema.Types.ObjectId,
       ref: 'Organization',
       required: [true, 'Organization ID is required'],
-      index: true,
     },
+
     email: {
       type: String,
       required: [true, 'Email is required'],
       trim: true,
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
-      index: true,
     },
+
     role: {
       type: String,
       enum: {
@@ -49,13 +49,13 @@ const InvitationSchema = new Schema<IInvitation>(
         message: '{VALUE} is not a valid status',
       },
       default: 'pending',
-      index: true,
     },
+
     expiresAt: {
       type: Date,
       required: true,
-      index: true,
     },
+
   },
   {
     timestamps: true,

@@ -7,12 +7,14 @@ import { requireOrgRole } from '@/app/lib/utils/projectAuth';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
 
-    const { user, environment, error } = await getEnvWithProjectAuth(req, params.envId);
+    const { user, environment, error } = await getEnvWithProjectAuth(req, envId);
+
     if (error) return error;
 
     return Response.json({
@@ -30,12 +32,14 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
 
-    const { user, environment, error } = await getEnvWithProjectAuth(req, params.envId);
+    const { user, environment, error } = await getEnvWithProjectAuth(req, envId);
+
     if (error) return error;
 
     const { name } = await req.json();
@@ -67,19 +71,21 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
 
-    const { user, environment, orgMember, error } = await getEnvWithProjectAuth(req, params.envId);
+    const { user, environment, orgMember, error } = await getEnvWithProjectAuth(req, envId);
     if (error) return error;
 
     const roleError = requireOrgRole(orgMember!.role, 'admin');
     if (roleError) return roleError;
 
-    await EnvVariable.deleteMany({ environmentId: params.envId });
-    await Environment.findByIdAndDelete(params.envId);
+    await EnvVariable.deleteMany({ environmentId: envId });
+    await Environment.findByIdAndDelete(envId);
+
 
     return Response.json({
       success: true,

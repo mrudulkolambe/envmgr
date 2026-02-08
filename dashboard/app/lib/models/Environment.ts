@@ -15,8 +15,8 @@ const EnvironmentSchema = new Schema<IEnvironment>(
       type: Schema.Types.ObjectId,
       ref: 'Project',
       required: [true, 'Project ID is required'],
-      index: true,
     },
+
     name: {
       type: String,
       required: [true, 'Environment name is required'],
@@ -42,6 +42,7 @@ const EnvironmentSchema = new Schema<IEnvironment>(
 
 EnvironmentSchema.index({ projectId: 1, slug: 1 }, { unique: true });
 EnvironmentSchema.index({ projectId: 1 });
+
 
 EnvironmentSchema.statics = {
   findByProject: async function (projectId: string) {

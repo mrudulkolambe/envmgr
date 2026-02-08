@@ -14,14 +14,14 @@ const ProjectMemberSchema = new Schema<IProjectMember>(
       type: Schema.Types.ObjectId,
       ref: 'Project',
       required: [true, 'Project ID is required'],
-      index: true,
     },
+
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'User ID is required'],
-      index: true,
     },
+
     role: {
       type: String,
       enum: {

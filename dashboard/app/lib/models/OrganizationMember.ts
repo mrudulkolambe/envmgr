@@ -14,14 +14,14 @@ const OrganizationMemberSchema = new Schema<IOrganizationMember>(
       type: Schema.Types.ObjectId,
       ref: 'Organization',
       required: [true, 'Organization ID is required'],
-      index: true,
     },
+
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'User ID is required'],
-      index: true,
     },
+
     role: {
       type: String,
       enum: {
@@ -39,7 +39,7 @@ const OrganizationMemberSchema = new Schema<IOrganizationMember>(
 );
 
 OrganizationMemberSchema.index({ organizationId: 1, userId: 1 }, { unique: true });
-OrganizationMemberSchema.index({ userId: 1 });
+
 
 OrganizationMemberSchema.statics = {
   findByOrganization: async function (organizationId: string) {
@@ -54,6 +54,8 @@ OrganizationMemberSchema.statics = {
     return this.findOne({ organizationId, userId });
   },
 };
+
+OrganizationMemberSchema.index({ userId: 1, createdAt: -1 });
 
 const OrganizationMember: Model<IOrganizationMember> =
   mongoose.models.OrganizationMember || mongoose.model<IOrganizationMember>('OrganizationMember', OrganizationMemberSchema);

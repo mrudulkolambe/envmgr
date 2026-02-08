@@ -20,7 +20,6 @@ const OrganizationSchema = new Schema<IOrganization>(
     slug: {
       type: String,
       required: [true, 'Slug is required'],
-      unique: true,
       trim: true,
       lowercase: true,
       match: [
@@ -28,12 +27,13 @@ const OrganizationSchema = new Schema<IOrganization>(
         'Slug can only contain lowercase letters, numbers, and hyphens',
       ],
     },
+
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'Creator ID is required'],
-      index: true,
     },
+
   },
   {
     timestamps: true,
@@ -44,6 +44,7 @@ const OrganizationSchema = new Schema<IOrganization>(
 OrganizationSchema.index({ slug: 1 }, { unique: true });
 OrganizationSchema.index({ createdBy: 1 });
 
+
 OrganizationSchema.statics = {
   findBySlug: async function (slug: string) {
     return this.findOne({ slug });
@@ -53,6 +54,10 @@ OrganizationSchema.statics = {
     return this.find({ createdBy }).sort({ createdAt: -1 });
   },
 };
+
+OrganizationSchema.index({ name: 1 });
+OrganizationSchema.index({ name: 'text', slug: 'text' });
+
 
 const Organization: Model<IOrganization> =
   mongoose.models.Organization || mongoose.model<IOrganization>('Organization', OrganizationSchema);

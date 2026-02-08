@@ -5,12 +5,13 @@ import { getProjectMember } from '@/app/lib/utils/projectAuth';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { user, project, projectMember, error } = await getProjectMember(req, params.projectId);
+    const { user, project, projectMember, error } = await getProjectMember(req, projectId);
     if (error) return error;
 
     const { name, slug } = await req.json();
@@ -30,7 +31,7 @@ export async function POST(
     }
 
     const existingEnv = await Environment.findOne({
-      projectId: params.projectId,
+      projectId: projectId,
       slug: slug.toLowerCase().trim(),
     });
 
@@ -42,10 +43,11 @@ export async function POST(
     }
 
     const environment = await Environment.create({
-      projectId: params.projectId,
+      projectId: projectId,
       name: name.trim(),
       slug: slug.toLowerCase().trim(),
     });
+
 
     return Response.json(
       {
@@ -71,16 +73,18 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { error } = await getProjectMember(req, params.projectId);
+    const { error } = await getProjectMember(req, projectId);
     if (error) return error;
 
-    const environments = await Environment.find({ projectId: params.projectId })
+    const environments = await Environment.find({ projectId: projectId })
       .sort({ createdAt: 1 });
+
 
     return Response.json({
       success: true,

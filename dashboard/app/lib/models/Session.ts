@@ -19,8 +19,8 @@ const SessionSchema = new Schema<ISession>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'User ID is required'],
-      index: true,
     },
+
     token: {
       type: String,
       required: [true, 'Token is required'],
@@ -66,7 +66,6 @@ const SessionSchema = new Schema<ISession>(
   }
 );
 
-SessionSchema.index({ token: 1 }, { unique: true });
 SessionSchema.index({ userId: 1, type: 1 });
 SessionSchema.index({ expiresAt: 1 });
 

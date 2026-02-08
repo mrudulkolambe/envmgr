@@ -6,9 +6,10 @@ import { getSessionUser } from '@/app/lib/utils/auth';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { inviteId: string } }
+  { params }: { params: Promise<{ inviteId: string }> }
 ) {
   try {
+    const { inviteId } = await params;
     await connectDB();
 
     const user = await getSessionUser(req);
@@ -19,7 +20,8 @@ export async function POST(
       );
     }
 
-    const invitation = await Invitation.findById(params.inviteId);
+    const invitation = await Invitation.findById(inviteId);
+
 
     if (!invitation) {
       return Response.json(

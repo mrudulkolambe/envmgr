@@ -30,12 +30,14 @@ async function validateAccess(req: NextRequest, envId: string) {
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
-    const { user, environment, error } = await validateAccess(req, params.envId);
+    const { user, environment, error } = await validateAccess(req, envId);
     if (error) return error;
+
 
     const { variables } = await req.json();
 
@@ -48,18 +50,20 @@ export async function POST(
 
     try {
       // 1. Delete all existing variables for this environment
-      await EnvVariable.deleteMany({ environmentId: params.envId }).session(session);
+      await EnvVariable.deleteMany({ environmentId: envId }).session(session);
+
 
       // 2. Insert new variables
       const inserts = Object.entries(variables)
         .filter(([key]) => /^[A-Z0-9_]+$/.test(key))
         .map(([key, value]) => ({
           projectId: environment!.projectId,
-          environmentId: params.envId,
+          environmentId: envId,
           key: key.toUpperCase(),
           value: encrypt(String(value)),
           createdBy: user!._id,
         }));
+
 
       if (inserts.length > 0) {
         await EnvVariable.insertMany(inserts, { session });

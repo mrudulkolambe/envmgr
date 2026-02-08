@@ -5,12 +5,14 @@ import { getOrgMember, requireRole } from '@/app/lib/utils/orgAuth';
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { orgId: string; memberId: string } }
+  { params }: { params: Promise<{ orgId: string; memberId: string }> }
 ) {
   try {
+    const { orgId, memberId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
+
     if (error) return error;
 
     const roleError = requireRole(member!.role, 'admin');
@@ -33,9 +35,10 @@ export async function PATCH(
     }
 
     const targetMember = await OrganizationMember.findOne({
-      _id: params.memberId,
-      organizationId: params.orgId,
+      _id: memberId,
+      organizationId: orgId,
     });
+
 
     if (!targetMember) {
       return Response.json(
@@ -73,21 +76,24 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { orgId: string; memberId: string } }
+  { params }: { params: Promise<{ orgId: string; memberId: string }> }
 ) {
   try {
+    const { orgId, memberId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
+
     if (error) return error;
 
     const roleError = requireRole(member!.role, 'admin');
     if (roleError) return roleError;
 
     const targetMember = await OrganizationMember.findOne({
-      _id: params.memberId,
-      organizationId: params.orgId,
+      _id: memberId,
+      organizationId: orgId,
     });
+
 
     if (!targetMember) {
       return Response.json(
@@ -110,7 +116,8 @@ export async function DELETE(
       );
     }
 
-    await OrganizationMember.findByIdAndDelete(params.memberId);
+    await OrganizationMember.findByIdAndDelete(memberId);
+
 
     return Response.json({
       success: true,

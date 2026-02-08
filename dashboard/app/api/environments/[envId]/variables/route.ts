@@ -30,14 +30,16 @@ async function validateAccess(req: NextRequest, envId: string) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
-    const { environment, error } = await validateAccess(req, params.envId);
+    const { environment, error } = await validateAccess(req, envId);
     if (error) return error;
 
-    const variables = await EnvVariable.find({ environmentId: params.envId }).sort({ key: 1 });
+    const variables = await EnvVariable.find({ environmentId: envId }).sort({ key: 1 });
+
     
     const data = variables.map(v => ({
       key: v.key,
@@ -57,11 +59,13 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
-    const { user, environment, error } = await validateAccess(req, params.envId);
+    const { user, environment, error } = await validateAccess(req, envId);
+
     if (error) return error;
 
     const { variables } = await req.json();
@@ -79,7 +83,8 @@ export async function PUT(
       const encryptedValue = encrypt(String(value));
 
       await EnvVariable.findOneAndUpdate(
-        { environmentId: params.envId, key: key.toUpperCase() },
+        { environmentId: envId, key: key.toUpperCase() },
+
         { 
           projectId: environment!.projectId,
           value: encryptedValue,

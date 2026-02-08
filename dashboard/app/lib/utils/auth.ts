@@ -19,7 +19,15 @@ export async function getSessionUser(
     await connectDB();
 
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get('session_token')?.value;
+    let sessionToken = cookieStore.get('session_token')?.value;
+
+    // Fallback to Authorization header if cookie is missing
+    if (!sessionToken) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        sessionToken = authHeader.substring(7);
+      }
+    }
 
     if (!sessionToken) {
       return null;

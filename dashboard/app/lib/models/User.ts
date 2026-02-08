@@ -49,7 +49,6 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-UserSchema.index({ email: 1 }, { unique: true });
 
 UserSchema.methods = {
   toPublicJSON: function () {

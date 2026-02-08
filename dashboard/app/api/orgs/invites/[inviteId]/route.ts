@@ -5,12 +5,14 @@ import { getOrgMember, requireRole } from '@/app/lib/utils/orgAuth';
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { inviteId: string } }
+  { params }: { params: Promise<{ inviteId: string }> }
 ) {
   try {
+    const { inviteId } = await params;
     await connectDB();
 
-    const invitation = await Invitation.findById(params.inviteId);
+    const invitation = await Invitation.findById(inviteId);
+
 
     if (!invitation) {
       return Response.json(

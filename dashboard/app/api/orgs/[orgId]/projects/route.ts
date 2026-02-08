@@ -6,12 +6,13 @@ import { getOrgMember, requireRole } from '@/app/lib/utils/orgAuth';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
     if (error) return error;
 
     const roleError = requireRole(member!.role, 'admin');
@@ -35,9 +36,10 @@ export async function POST(
       .substring(0, 50);
 
     const existingProject = await Project.findOne({
-      organizationId: params.orgId,
+      organizationId: orgId,
       slug,
     });
+
 
     if (existingProject) {
       return Response.json(
@@ -47,11 +49,12 @@ export async function POST(
     }
 
     const project = await Project.create({
-      organizationId: params.orgId,
+      organizationId: orgId,
       name: name.trim(),
       slug,
       description: description?.trim() || '',
     });
+
 
     await ProjectMember.create({
       projectId: project._id,
@@ -84,16 +87,18 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
     if (error) return error;
 
-    const projects = await Project.find({ organizationId: params.orgId })
+    const projects = await Project.find({ organizationId: orgId })
       .sort({ createdAt: -1 });
+
 
     const projectIds = projects.map(p => p._id);
     const memberships = await ProjectMember.find({

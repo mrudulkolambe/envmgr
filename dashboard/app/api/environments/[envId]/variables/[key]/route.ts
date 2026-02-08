@@ -30,17 +30,19 @@ async function validateAccess(req: NextRequest, envId: string) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { envId: string; key: string } }
+  { params }: { params: Promise<{ envId: string; key: string }> }
 ) {
   try {
+    const { envId, key } = await params;
     await connectDB();
-    const { error } = await validateAccess(req, params.envId);
+    const { error } = await validateAccess(req, envId);
     if (error) return error;
 
     const variable = await EnvVariable.findOne({
-      environmentId: params.envId,
-      key: params.key.toUpperCase(),
+      environmentId: envId,
+      key: key.toUpperCase(),
     });
+
 
     if (!variable) {
       return Response.json({ success: false, error: 'Variable not found' }, { status: 404 });
@@ -62,11 +64,12 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { envId: string; key: string } }
+  { params }: { params: Promise<{ envId: string; key: string }> }
 ) {
   try {
+    const { envId, key } = await params;
     await connectDB();
-    const { user, environment, error } = await validateAccess(req, params.envId);
+    const { user, environment, error } = await validateAccess(req, envId);
     if (error) return error;
 
     const { value } = await req.json();
@@ -75,14 +78,15 @@ export async function PUT(
       return Response.json({ success: false, error: 'Value is required' }, { status: 400 });
     }
 
-    if (!/^[A-Z0-9_]+$/.test(params.key.toUpperCase())) {
+    if (!/^[A-Z0-9_]+$/.test(key.toUpperCase())) {
       return Response.json({ success: false, error: 'Invalid key format' }, { status: 400 });
     }
 
     const encryptedValue = encrypt(String(value));
 
     const variable = await EnvVariable.findOneAndUpdate(
-      { environmentId: params.envId, key: params.key.toUpperCase() },
+      { environmentId: envId, key: key.toUpperCase() },
+
       { 
         projectId: environment!.projectId,
         value: encryptedValue,
@@ -106,17 +110,19 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { envId: string; key: string } }
+  { params }: { params: Promise<{ envId: string; key: string }> }
 ) {
   try {
+    const { envId, key } = await params;
     await connectDB();
-    const { error } = await validateAccess(req, params.envId);
+    const { error } = await validateAccess(req, envId);
     if (error) return error;
 
     const result = await EnvVariable.findOneAndDelete({
-      environmentId: params.envId,
-      key: params.key.toUpperCase(),
+      environmentId: envId,
+      key: key.toUpperCase(),
     });
+
 
     if (!result) {
       return Response.json({ success: false, error: 'Variable not found' }, { status: 404 });

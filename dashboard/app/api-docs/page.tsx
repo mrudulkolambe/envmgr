@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import './api-docs.css';
+import Button from '@/components/app/button';
 
 interface Endpoint {
   method: string;
@@ -413,7 +413,7 @@ function EndpointCard({ endpoint }: { endpoint: Endpoint }) {
                 </div>
               )}
 
-              <Button 
+              <Button
                 onClick={handleExecute}
                 disabled={loading}
                 className="execute-button"

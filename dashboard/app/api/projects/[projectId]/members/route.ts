@@ -6,15 +6,17 @@ import { getProjectMember, getProjectWithOrgAuth, requireOrgRole } from '@/app/l
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { user, project, projectMember, error } = await getProjectMember(req, params.projectId);
+    const { user, project, projectMember, error } = await getProjectMember(req, projectId);
     if (error) return error;
 
-    const members = await ProjectMember.find({ projectId: params.projectId })
+    const members = await ProjectMember.find({ projectId: projectId })
+
       .populate('userId', 'name email')
       .sort({ createdAt: 1 });
 
@@ -42,12 +44,14 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, params.projectId);
+    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, projectId);
+
     if (error) return error;
 
     const roleError = requireOrgRole(orgMember!.role, 'admin');
@@ -75,7 +79,7 @@ export async function POST(
     }
 
     const existingProjectMember = await ProjectMember.findOne({
-      projectId: params.projectId,
+      projectId: projectId,
       userId,
     });
 
@@ -87,10 +91,11 @@ export async function POST(
     }
 
     const projectMember = await ProjectMember.create({
-      projectId: params.projectId,
+      projectId: projectId,
       userId,
       role: 'viewer',
     });
+
 
     return Response.json(
       {

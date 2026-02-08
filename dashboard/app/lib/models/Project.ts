@@ -20,8 +20,8 @@ const ProjectSchema = new Schema<IProject>(
       type: Schema.Types.ObjectId,
       ref: 'Organization',
       required: [true, 'Organization ID is required'],
-      index: true,
     },
+
     name: {
       type: String,
       required: [true, 'Project name is required'],

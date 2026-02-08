@@ -7,15 +7,17 @@ import { getOrgMember, requireRole } from '@/app/lib/utils/orgAuth';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
     if (error) return error;
 
-    const members = await OrganizationMember.find({ organizationId: params.orgId })
+    const members = await OrganizationMember.find({ organizationId: orgId })
+
       .populate('userId', 'name email')
       .sort({ createdAt: 1 });
 
@@ -43,12 +45,14 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
+
     if (error) return error;
 
     const roleError = requireRole(member!.role, 'admin');
@@ -74,7 +78,7 @@ export async function POST(
     
     if (invitedUser) {
       const existingMember = await OrganizationMember.findOne({
-        organizationId: params.orgId,
+        organizationId: orgId,
         userId: invitedUser._id,
       });
 
@@ -86,10 +90,11 @@ export async function POST(
       }
 
       await OrganizationMember.create({
-        organizationId: params.orgId,
+        organizationId: orgId,
         userId: invitedUser._id,
         role: role || 'member',
       });
+
 
       return Response.json(
         {
@@ -107,7 +112,7 @@ export async function POST(
     }
 
     const existingInvite = await Invitation.findOne({
-      organizationId: params.orgId,
+      organizationId: orgId,
       email: email.toLowerCase().trim(),
       status: 'pending',
       expiresAt: { $gt: new Date() },
@@ -124,9 +129,10 @@ export async function POST(
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     const invitation = await Invitation.create({
-      organizationId: params.orgId,
+      organizationId: orgId,
       email: email.toLowerCase().trim(),
       role: role || 'member',
+
       invitedBy: user!._id,
       expiresAt,
     });

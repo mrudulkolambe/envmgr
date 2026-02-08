@@ -30,14 +30,16 @@ async function validateAccess(req: NextRequest, envId: string) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { envId: string } }
+  { params }: { params: Promise<{ envId: string }> }
 ) {
   try {
+    const { envId } = await params;
     await connectDB();
-    const { error } = await validateAccess(req, params.envId);
+    const { error } = await validateAccess(req, envId);
     if (error) return error;
 
-    const variables = await EnvVariable.find({ environmentId: params.envId }).sort({ key: 1 });
+    const variables = await EnvVariable.find({ environmentId: envId }).sort({ key: 1 });
+
     
     const dotenvContent = variables
       .map(v => `${v.key}=${decrypt(v.value)}`)
@@ -46,9 +48,10 @@ export async function GET(
     return new Response(dotenvContent, {
       headers: {
         'Content-Type': 'text/plain',
-        'Content-Disposition': `attachment; filename=".env.${params.envId}"`,
+        'Content-Disposition': `attachment; filename=".env.${envId}"`,
       },
     });
+
   } catch (error: any) {
     console.error('Export variables error:', error);
     return Response.json({ success: false, error: 'Failed to export variables' }, { status: 500 });

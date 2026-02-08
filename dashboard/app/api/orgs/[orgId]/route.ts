@@ -6,15 +6,17 @@ import { getOrgMember, requireRole } from '@/app/lib/utils/orgAuth';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
     if (error) return error;
 
-    const organization = await Organization.findById(params.orgId);
+    const organization = await Organization.findById(orgId);
+
     if (!organization) {
       return Response.json(
         { success: false, error: 'Organization not found' },
@@ -45,12 +47,13 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
     if (error) return error;
 
     const roleError = requireRole(member!.role, 'admin');
@@ -65,7 +68,8 @@ export async function PATCH(
       );
     }
 
-    const organization = await Organization.findById(params.orgId);
+    const organization = await Organization.findById(orgId);
+
     if (!organization) {
       return Response.json(
         { success: false, error: 'Organization not found' },
@@ -96,18 +100,19 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { orgId: string } }
+  { params }: { params: Promise<{ orgId: string }> }
 ) {
   try {
+    const { orgId } = await params;
     await connectDB();
 
-    const { user, member, error } = await getOrgMember(req, params.orgId);
+    const { user, member, error } = await getOrgMember(req, orgId);
     if (error) return error;
 
     const roleError = requireRole(member!.role, 'owner');
     if (roleError) return roleError;
 
-    const organization = await Organization.findById(params.orgId);
+    const organization = await Organization.findById(orgId);
     if (!organization) {
       return Response.json(
         { success: false, error: 'Organization not found' },
@@ -115,8 +120,9 @@ export async function DELETE(
       );
     }
 
-    await OrganizationMember.deleteMany({ organizationId: params.orgId });
-    await Organization.findByIdAndDelete(params.orgId);
+    await OrganizationMember.deleteMany({ organizationId: orgId });
+    await Organization.findByIdAndDelete(orgId);
+
 
     return Response.json({
       success: true,

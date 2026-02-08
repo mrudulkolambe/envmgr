@@ -6,12 +6,14 @@ import { getProjectMember, getProjectWithOrgAuth, requireOrgRole } from '@/app/l
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { user, project, projectMember, orgMember, error } = await getProjectMember(req, params.projectId);
+    const { user, project, projectMember, orgMember, error } = await getProjectMember(req, projectId);
+
     if (error) return error;
 
     return Response.json({
@@ -40,12 +42,14 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, params.projectId);
+    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, projectId);
+
     if (error) return error;
 
     const roleError = requireOrgRole(orgMember!.role, 'admin');
@@ -90,19 +94,21 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const { projectId } = await params;
     await connectDB();
 
-    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, params.projectId);
+    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, projectId);
     if (error) return error;
 
     const roleError = requireOrgRole(orgMember!.role, 'owner');
     if (roleError) return roleError;
 
-    await ProjectMember.deleteMany({ projectId: params.projectId });
-    await Project.findByIdAndDelete(params.projectId);
+    await ProjectMember.deleteMany({ projectId: projectId });
+    await Project.findByIdAndDelete(projectId);
+
 
     return Response.json({
       success: true,

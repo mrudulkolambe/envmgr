@@ -5,21 +5,23 @@ import { getProjectWithOrgAuth, requireOrgRole } from '@/app/lib/utils/projectAu
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { projectId: string; userId: string } }
+  { params }: { params: Promise<{ projectId: string; userId: string }> }
 ) {
   try {
+    const { projectId, userId } = await params;
     await connectDB();
 
-    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, params.projectId);
+    const { user, project, orgMember, error } = await getProjectWithOrgAuth(req, projectId);
     if (error) return error;
 
     const roleError = requireOrgRole(orgMember!.role, 'admin');
     if (roleError) return roleError;
 
     const projectMember = await ProjectMember.findOne({
-      projectId: params.projectId,
-      userId: params.userId,
+      projectId,
+      userId,
     });
+
 
     if (!projectMember) {
       return Response.json(
