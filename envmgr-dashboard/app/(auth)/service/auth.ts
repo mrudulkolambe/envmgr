@@ -1,8 +1,8 @@
 import API from "@/lib/api";
 import { APIRoutes } from "@/lib/route";
-import { AuthValidator } from "@/lib/validators/auth";
 import { ServiceCallbacks } from "@/service/types/service.types";
 import { z } from "zod";
+import { AuthValidator } from "@/lib/db/validators/auth";
 
 type LoginRequest = z.infer<typeof AuthValidator.loginSchema>;
 type SignupRequest = z.infer<typeof AuthValidator.signupSchema>;
