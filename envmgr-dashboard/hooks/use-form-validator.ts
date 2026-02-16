@@ -1,4 +1,4 @@
-import { FieldValidator } from '@/lib/validators/validator';
+import { FieldValidator } from '@/lib/db/validators/validator';
 import { useState, useCallback, useMemo } from 'react';
 
 type ValidationSchema = {

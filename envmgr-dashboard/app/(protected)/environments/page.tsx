@@ -4,14 +4,14 @@ import AppBreadcrumb from "@/components/app/breadcrumb"
 import { EnvironmentService } from "./service/environments.service"
 import { DataTable } from "@/components/app/data-table";
 import { columns } from "./components/table";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Environment } from "./service/types/environment.response.types";
 import { useSearchParams } from "next/navigation";
 import PageHeader from "@/components/app/header";
 
 import { ServiceTable } from "@/components/app/service-table";
 
-const EnvironmentsPage = () => {
+const EnvironmentsPageContent = () => {
     const environmentService = new EnvironmentService();
     const searchParams = useSearchParams();
     const projectId = searchParams.get("projectId") || "";
@@ -33,6 +33,14 @@ const EnvironmentsPage = () => {
                 />
             </div>
         </section>
+    )
+}
+
+const EnvironmentsPage = () => {
+    return (
+        <Suspense fallback={null}>
+            <EnvironmentsPageContent />
+        </Suspense>
     )
 }
 
