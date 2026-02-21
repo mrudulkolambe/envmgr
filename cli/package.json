@@ -1,20 +1,32 @@
 {
-  "name": "cli",
+  "name": "envmgr-cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CLI for managing environment variables across projects and environments",
+  "main": "dist/index.js",
   "bin": {
     "envmgr": "./dist/index.js"
   },
   "type": "module",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "dev": "tsx src/index.ts",
     "interactive": "tsx src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "env",
+    "environment",
+    "cli",
+    "variables",
+    "envmgr",
+    "secrets"
+  ],
+  "author": "Mrudul Kolambe",
+  "license": "MIT",
   "dependencies": {
     "@inquirer/prompts": "^8.2.1",
     "@types/react": "^19.2.14",

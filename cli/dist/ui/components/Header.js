@@ -1,6 +1,12 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Box, Text } from 'ink';
-import Gradient from 'ink-gradient';
+const LOGO = `
+  ███████╗███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ██████╗ 
+  ██╔════╝████╗  ██║██║   ██║████╗ ████║██╔════╝ ██╔══██╗
+  █████╗  ██╔██╗ ██║██║   ██║██╔████╔██║██║  ███╗██████╔╝
+  ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝██║╚██╔╝██║██║   ██║██╔══██╗
+  ███████╗██║ ╚████║ ╚████╔╝ ██║ ╚═╝ ██║╚██████╔╝██║  ██║
+  ╚══════╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝`;
 export const Header = () => {
-    return (_jsxs(Box, { flexDirection: "column", marginBottom: 1, children: [_jsxs(Box, { flexDirection: "row", alignItems: "center", children: [_jsx(Box, { borderStyle: "round", borderColor: "cyan", paddingX: 2, marginRight: 1, children: _jsx(Gradient, { name: "atlas", children: _jsx(Text, { bold: true, children: "EnvMgr CLI" }) }) }), _jsx(Box, { paddingX: 1, borderStyle: "single", borderColor: "gray", borderDimColor: true, children: _jsx(Text, { dimColor: true, italic: true, children: "Premium Experience" }) })] }), _jsx(Box, { marginTop: 1, paddingX: 1, children: _jsx(Text, { dimColor: true, children: "Management Console \u2022 Unified Dashboard" }) })] }));
+    return (_jsxs(Box, { flexDirection: "column", marginBottom: 1, paddingX: 1, children: [_jsx(Box, { children: _jsx(Text, { color: "#34B27B", bold: true, children: LOGO }) }), _jsxs(Box, { marginTop: 1, paddingX: 2, flexDirection: "row", justifyContent: "space-between", width: 65, children: [_jsx(Text, { dimColor: true, bold: true, children: "WORKSPACE CONSOLE" }), _jsx(Text, { dimColor: true, italic: true, children: "Unified Management \u2022 v1.0.0" })] }), _jsx(Box, { borderStyle: "single", borderTop: true, borderBottom: false, borderLeft: false, borderRight: false, borderColor: "gray", borderDimColor: true, marginTop: 1, width: 65 })] }));
 };

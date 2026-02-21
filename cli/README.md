@@ -1,6 +1,6 @@
 # 🚀 EnvMgr CLI Documentation
 
-EnvMgr is a premium CLI tool designed to manage your environment variables across different projects and environments with ease. It provides both a beautiful interactive dashboard and powerful standalone commands.
+EnvMgr is a CLI tool designed to manage your environment variables across different projects and environments with ease. It provides both a beautiful interactive dashboard and powerful standalone commands.
 
 ---
 
@@ -79,7 +79,7 @@ envmgr doctor
 
 ## 💡 Pro Tips
 
-- **Interactive Mode**: Simply run `envmgr` without any arguments to open the premium management dashboard.
+- **Interactive Mode**: Simply run `envmgr` without any arguments to open the management dashboard.
 - **JSON Output**: Use `--json` with the `status` command for machine-readable output.
 - **Escape Key**: Use the `Esc` key on any interactive screen to cancel and go back.
 - **Security**: The `.envmgr/` folder and `.env*` files are automatically ignored in your provided `.gitignore` to keep secrets safe.
