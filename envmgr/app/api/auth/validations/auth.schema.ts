@@ -1,0 +1,18 @@
+import { z } from "zod"
+
+export const signupSchema = z.object({
+  name: z.string().min(2).max(50),
+
+  email: z.email(),
+
+  password: z.string().min(6).max(100),
+})
+
+export const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(6),
+  client: z.enum(["web", "cli"]),
+})
+
+export type SignupInput = z.infer<typeof signupSchema>
+export type LoginInput = z.infer<typeof loginSchema>

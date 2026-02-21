@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String    @unique
+  password String
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  userId      String  @db.ObjectId
+  user        User    @relation(fields: [userId], references: [id])
+
+  environments Environment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Environment {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String // dev, staging, production
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id])
+
+  variables Variable[]
+  snapshots Snapshot[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Variable {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  key      String
+  value    String
+  isSecret Boolean @default(false)
+
+  environmentId String      @db.ObjectId
+  environment   Environment @relation(fields: [environmentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([environmentId, key], name: "environmentId_key")
+}
+
+model Snapshot {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String?
+  environmentId String      @db.ObjectId
+  environment   Environment @relation(fields: [environmentId], references: [id])
+  variables     Json // Array of { key: string, value: string, isSecret: boolean }
+
+  createdAt DateTime @default(now())
+
+  @@unique([environmentId, name])
+}
