@@ -1,0 +1,17 @@
+{
+  "name": "local",
+  "variables": {
+    "baseURL": {
+      "value": "http://localhost:3000",
+      "type": "string",
+      "id": "c03a50e7-f899-45f9-af20-9c2c0d782d31",
+      "isSecret": false
+    },
+    "token": {
+      "value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI2OTk5NjYwZmQ3MWVhN2UxNjgwM2NmNjMiLCJlbWFpbCI6Im1ydWR1bGtvbGFtYmUwMkBnbWFpbC5jb20iLCJpYXQiOjE3NzE3NDU2MzksImV4cCI6MTc3MjM1MDQzOX0.a7Rzcua5GZK6xcGef3AKWejT1laOolb1VGITNCcfjvU",
+      "type": "string",
+      "id": "a41659b4-21ef-48a6-98ef-f56f3dccc7f3",
+      "isSecret": true
+    }
+  }
+}

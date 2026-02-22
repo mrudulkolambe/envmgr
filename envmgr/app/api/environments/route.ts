@@ -3,12 +3,13 @@ import { apiResponse } from "@/lib/utils/api-response"
 import { CreateEnvironmentSchema } from "./validations/environment.validation"
 import { ZodError } from "zod"
 import { isObjectId } from "@/lib/validators/objectId"
+import { getAuthUser } from "@/lib/api-auth"
 
 export async function POST(req: Request) {
   try {
-    const userId = req.headers.get("x-user-id")
+    const user = await getAuthUser(req)
 
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
@@ -29,9 +30,10 @@ export async function POST(req: Request) {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        userId,
+        userId: user.id,
       },
     })
+
 
     if (!project) {
       return apiResponse({
@@ -69,9 +71,9 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const userId = req.headers.get("x-user-id")
+    const user = await getAuthUser(req)
 
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
@@ -99,7 +101,7 @@ export async function GET(req: Request) {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        userId,
+        userId: user.id,
       },
     })
 
@@ -112,7 +114,7 @@ export async function GET(req: Request) {
 
     const search = searchParams.get("search")?.trim()
 
-    const environments = await prisma.environment.findMany({
+    const environmentsData = await prisma.environment.findMany({
       where: {
         projectId,
         ...(search && {
@@ -122,8 +124,19 @@ export async function GET(req: Request) {
           },
         }),
       },
+      include: {
+        _count: {
+          select: { variables: true },
+        },
+      },
       orderBy: { createdAt: "asc" },
     })
+
+    const environments = environmentsData.map((env) => ({
+      ...env,
+      variables: env._count.variables,
+      _count: undefined,
+    }))
 
     return apiResponse({
       message: "Environments fetched successfully",

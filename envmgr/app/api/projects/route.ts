@@ -2,35 +2,40 @@ import { prisma } from "@/lib/prisma"
 import { apiResponse } from "@/lib/utils/api-response"
 import { CreateProjectSchema } from "./validations/project.validation"
 import { ZodError } from "zod"
+import { getAuthUser } from "@/lib/api-auth"
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const user = await getAuthUser(req)
 
-    const { name, description } =
-      CreateProjectSchema.parse(body)
-
-    const userId = req.headers.get("x-user-id")
-
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
       })
     }
 
+    const body = await req.json()
+
+
+    const { name, description } =
+      CreateProjectSchema.parse(body)
+
     const project = await prisma.project.create({
       data: {
         name,
         description,
-        userId,
+        userId: user.id,
       },
     })
 
     return apiResponse({
       message: "Project created successfully",
       status: 201,
-      data: project,
+      data: {
+        ...project,
+        environments: 0
+      },
     })
   } catch (error) {
     if (error instanceof ZodError) {
@@ -49,9 +54,9 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const userId = req.headers.get("x-user-id")
+    const user = await getAuthUser(req)
 
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
@@ -67,7 +72,7 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit
 
     const where: any = {
-      userId,
+      userId: user.id,
       ...(search && {
         OR: [
           {
@@ -86,15 +91,26 @@ export async function GET(req: Request) {
       }),
     }
 
-    const [projects, total] = await Promise.all([
+    const [projectsData, total] = await Promise.all([
       prisma.project.findMany({
         where,
         skip,
         take: limit,
+        include: {
+          _count: {
+            select: { environments: true },
+          },
+        },
         orderBy: { createdAt: "desc" },
       }),
       prisma.project.count({ where }),
     ])
+
+    const projects = projectsData.map((project) => ({
+      ...project,
+      environments: project._count.environments,
+      _count: undefined,
+    }))
 
     return apiResponse({
       message: "Projects fetched successfully",

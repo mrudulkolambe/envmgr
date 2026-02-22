@@ -1,0 +1,21 @@
+{
+  "name": "login",
+  "rank": "auntit17717454481131",
+  "request": {
+    "type": "http",
+    "url": "{{baseURL}}/api/auth/login",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "POST",
+    "queryParams": [],
+    "headers": [],
+    "body": "{\n  \"email\": \"mrudulkolambe02@gmail.com\",\n  \"password\": \"mrudul@4772\",\n  \"client\": \"web\"\n}",
+    "contentType": "application/json",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    }
+  }
+}

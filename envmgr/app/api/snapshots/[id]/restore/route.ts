@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { apiResponse } from "@/lib/utils/api-response"
 import { isObjectId } from "@/lib/validators/objectId"
+import { getAuthUser } from "@/lib/api-auth"
 
 export async function POST(
   req: Request,
@@ -8,9 +9,9 @@ export async function POST(
 ) {
   try {
     const { id: snapshotId } = await context.params
-    const userId = req.headers.get("x-user-id")
+    const user = await getAuthUser(req)
 
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
@@ -43,7 +44,7 @@ export async function POST(
     }
 
     // Verify ownership
-    if (snapshot.environment.project.userId !== userId) {
+    if (snapshot.environment.project.userId !== user.id) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,

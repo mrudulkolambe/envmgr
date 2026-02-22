@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  email    String    @unique
-  password String
-  projects Project[]
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String     @unique
+  password  String
+  projects  Project[]
+  feedbacks Feedback[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -70,4 +71,13 @@ model Snapshot {
   createdAt DateTime @default(now())
 
   @@unique([environmentId, name])
+}
+
+model Feedback {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String  @db.ObjectId
+  user        User    @relation(fields: [userId], references: [id])
+  description String
+
+  createdAt DateTime @default(now())
 }

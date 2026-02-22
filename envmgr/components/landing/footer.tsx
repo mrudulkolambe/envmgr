@@ -1,6 +1,7 @@
 "use client"
 
-import { Layers, Twitter, Github, Linkedin } from "lucide-react"
+import { Twitter, Github, Linkedin } from "lucide-react"
+import { Logo } from "@/components/app/logo"
 
 export function Footer() {
   return (
@@ -8,9 +9,8 @@ export function Footer() {
       <div className="container px-6 mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center gap-2 mb-6">
-              <Layers className="w-6 h-6 text-primary" />
-              <span className="text-xl font-bold tracking-tight">envmgr</span>
+            <div className="flex items-center mb-6">
+              <Logo size="sm" />
             </div>
             <p className="text-muted-foreground leading-relaxed">
               Simple environment management for modern development teams.

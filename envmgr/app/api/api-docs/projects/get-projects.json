@@ -1,0 +1,52 @@
+{
+  "name": "get-projects",
+  "rank": "av",
+  "request": {
+    "type": "http",
+    "url": "{{baseURL}}/api/projects",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "GET",
+    "queryParams": [
+      {
+        "id": 0.21553894880028657,
+        "key": "page",
+        "value": "1",
+        "isEnabled": true
+      },
+      {
+        "id": 0.13089670160377032,
+        "key": "limit",
+        "value": "10",
+        "isEnabled": true
+      },
+      {
+        "id": 0.39296608521290466,
+        "key": "search",
+        "value": "",
+        "isEnabled": true
+      }
+    ],
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json",
+        "id": 0.40642461289101206,
+        "isEnabled": true
+      }
+    ],
+    "body": null,
+    "bodyContainer": {},
+    "contentType": "application/json",
+    "auth": {
+      "currentAuthType": "BEARER_TOKEN",
+      "authConfigStore": {
+        "BEARER_TOKEN": {
+          "bearer": "{{token}}"
+        }
+      }
+    }
+  }
+}

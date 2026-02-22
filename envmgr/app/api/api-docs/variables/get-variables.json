@@ -1,0 +1,33 @@
+{
+  "name": "get-variables",
+  "rank": "auntit17717770688551",
+  "request": {
+    "type": "http",
+    "url": "{{baseURL}}/api/variables",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "GET",
+    "queryParams": [
+      {
+        "id": 0.6699670425102962,
+        "key": "environmentId",
+        "value": "69997d49d71ea7e16803cf65",
+        "isEnabled": true
+      }
+    ],
+    "headers": [],
+    "body": null,
+    "bodyContainer": {},
+    "contentType": "text/plain",
+    "auth": {
+      "currentAuthType": "BEARER_TOKEN",
+      "authConfigStore": {
+        "BEARER_TOKEN": {
+          "bearer": "{{token}}"
+        }
+      }
+    }
+  }
+}

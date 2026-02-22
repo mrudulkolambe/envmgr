@@ -1,0 +1,72 @@
+{
+  "name": "get-environments",
+  "rank": "auntit17717759722521",
+  "request": {
+    "type": "http",
+    "url": "{{baseURL}}/api/environments",
+    "scripts": {
+      "preRequest": "",
+      "postResponse": ""
+    },
+    "method": "GET",
+    "queryParams": [
+      {
+        "id": 0.3898523357306809,
+        "key": "projectId",
+        "value": "699978b9d71ea7e16803cf64",
+        "isEnabled": true
+      },
+      {
+        "id": 0.8617344451409392,
+        "key": "search",
+        "value": "staging",
+        "isEnabled": true
+      }
+    ],
+    "headers": [
+      {
+        "key": "Authorization",
+        "value": "Bearer {{token}}",
+        "id": 0.6797927757935358,
+        "isEnabled": true
+      },
+      {
+        "key": "Cache-Control",
+        "value": "no-cache",
+        "id": 0.19804491573105554,
+        "isEnabled": true
+      },
+      {
+        "key": "Postman-Token",
+        "value": "<calculated when request is sent>",
+        "id": 0.6760140888999924,
+        "isEnabled": true
+      },
+      {
+        "key": "User-Agent",
+        "value": "PostmanRuntime/7.39.1",
+        "id": 0.01898064499725738,
+        "isEnabled": true
+      },
+      {
+        "key": "Accept",
+        "value": "*/*",
+        "id": 0.5393534337371795,
+        "isEnabled": true
+      },
+      {
+        "key": "Connection",
+        "value": "keep-alive",
+        "id": 0.33177246351184886,
+        "isEnabled": true
+      }
+    ],
+    "body": null,
+    "bodyContainer": {},
+    "contentType": "text/plain",
+    "auth": {
+      "currentAuthType": "INHERIT",
+      "authConfigStore": {}
+    }
+  }
+}

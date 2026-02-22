@@ -12,7 +12,7 @@ export default function Home() {
       <Hero />
       <TerminalShowcase />
       <Features />
-      <CTA />
+      {/* <CTA /> */}
       <Footer />
     </main>
   )

@@ -35,3 +35,13 @@ export const BulkCreateVariableSchema = z.object({
 export type BulkCreateVariableInput = z.infer<
   typeof BulkCreateVariableSchema
 >
+
+export const UpdateVariableSchema = z.object({
+  key: z.string().min(1).max(100).optional(),
+  value: z.string().min(1).optional(),
+  isSecret: z.boolean().optional(),
+})
+
+export type UpdateVariableInput = z.infer<
+  typeof UpdateVariableSchema
+>

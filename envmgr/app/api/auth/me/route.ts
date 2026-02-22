@@ -1,32 +1,14 @@
-import { prisma } from "@/lib/prisma"
 import { apiResponse } from "@/lib/utils/api-response"
+import { getAuthUser } from "@/lib/api-auth"
 
 export async function GET(req: Request) {
   try {
-    const userId = req.headers.get("x-user-id")
-
-    if (!userId) {
-      return apiResponse({
-        message: "Unauthorized",
-        status: 401,
-      })
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    })
+    const user = await getAuthUser(req)
 
     if (!user) {
       return apiResponse({
-        message: "User not found",
-        status: 404,
+        message: "Unauthorized",
+        status: 401,
       })
     }
 
@@ -43,3 +25,4 @@ export async function GET(req: Request) {
     })
   }
 }
+

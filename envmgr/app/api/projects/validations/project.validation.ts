@@ -13,3 +13,6 @@ export const CreateProjectSchema = z.object({
 })
 
 export type CreateProjectInput = z.infer<typeof CreateProjectSchema>
+
+export const UpdateProjectSchema = CreateProjectSchema.partial()
+export type UpdateProjectInput = z.infer<typeof UpdateProjectSchema>

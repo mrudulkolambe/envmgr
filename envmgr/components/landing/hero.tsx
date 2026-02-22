@@ -16,7 +16,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="max-w-4xl mx-auto text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl leading-[1.1]"
+          className="mx-auto text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl leading-[1.1]"
         >
           Environment management, <br />
           <span className="text-transparent bg-clip-text bg-linear-to-r from-primary via-emerald-400 to-cyan-400">

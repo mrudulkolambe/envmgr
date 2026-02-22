@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Layers } from "lucide-react"
+import { Logo } from "@/components/app/logo"
 
 export function Navbar() {
   return (
@@ -11,11 +11,8 @@ export function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between px-6 py-3 w-[95%] max-w-7xl bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl shadow-xl"
     >
-      <div className="flex items-center gap-2 group cursor-pointer">
-        <div className="p-1.5 rounded-lg bg-primary/10 border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-          <Layers className="w-5 h-5" />
-        </div>
-        <span className="text-lg font-bold tracking-tight">envmgr</span>
+      <div className="flex items-center group cursor-pointer">
+        <Logo size="sm" />
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">

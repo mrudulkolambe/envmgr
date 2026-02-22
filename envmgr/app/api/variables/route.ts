@@ -3,12 +3,13 @@ import { apiResponse } from "@/lib/utils/api-response"
 import { CreateVariableSchema } from "./validations/variable.validation"
 import { ZodError } from "zod"
 import { isObjectId } from "@/lib/validators/objectId"
+import { getAuthUser } from "@/lib/api-auth"
 
 export async function POST(req: Request) {
   try {
-    const userId = req.headers.get("x-user-id")
+    const user = await getAuthUser(req)
 
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
       where: {
         id: environmentId,
         project: {
-          userId,
+          userId: user.id,
         },
       },
       include: {
@@ -72,9 +73,9 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const userId = req.headers.get("x-user-id")
+    const user = await getAuthUser(req)
 
-    if (!userId) {
+    if (!user) {
       return apiResponse({
         message: "Unauthorized",
         status: 401,
@@ -102,7 +103,7 @@ export async function GET(req: Request) {
       where: {
         id: environmentId,
         project: {
-          userId,
+          userId: user.id,
         },
       },
     })
