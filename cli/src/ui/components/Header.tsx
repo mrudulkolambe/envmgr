@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import Gradient from 'ink-gradient';
+import { VERSION } from '../../constants.js';
 
 const LOGO = `
   ███████╗███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ██████╗ 
@@ -18,7 +19,7 @@ export const Header: React.FC = () => {
 			</Box>
 			<Box marginTop={1} paddingX={2} flexDirection="row" justifyContent="space-between" width={65}>
 				<Text dimColor bold>WORKSPACE CONSOLE</Text>
-				<Text dimColor italic>Unified Management • v1.0.0</Text>
+				<Text dimColor italic>Unified Management • v{VERSION}</Text>
 			</Box>
 			<Box borderStyle="single" borderTop borderBottom={false} borderLeft={false} borderRight={false} borderColor="gray" borderDimColor marginTop={1} width={65} />
 		</Box>

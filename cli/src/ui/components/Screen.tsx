@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Text } from 'ink';
+import { VERSION } from '../../constants.js';
 import { Header } from './Header.js';
 
 interface ScreenProps {
@@ -24,7 +25,7 @@ export const Screen: React.FC<ScreenProps> = ({ children }) => {
 						<Text color="gray">Selection: Arrow Keys • Confirm: Enter • Quit: Ctrl+C</Text>
 					</Box>
 					<Box>
-						<Text color="cyan" bold>EnvMgr v1.0.0</Text>
+						<Text color="cyan" bold>EnvMgr v{VERSION}</Text>
 					</Box>
 				</Box>
 			</Box>

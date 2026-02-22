@@ -1,6 +1,6 @@
 {
   "name": "envmgr-cli",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "CLI for managing environment variables across projects and environments",
   "main": "dist/index.js",
   "bin": {
