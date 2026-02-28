@@ -117,14 +117,14 @@ export default function ProjectDetailsPage() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
         <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center mb-6">
-           <Activity className="size-8 text-destructive" />
+          <Activity className="size-8 text-destructive" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Project not found</h1>
         <p className="text-muted-foreground max-w-sm mb-8">
           The project you're looking for doesn't exist or you don't have permission to view it.
         </p>
         <Button onClick={() => router.push('/dashboard')}>
-           Back to Dashboard
+          Back to Dashboard
         </Button>
       </div>
     )
@@ -140,13 +140,13 @@ export default function ProjectDetailsPage() {
       <DashboardNav />
 
       <main className="w-full px-8 py-10 relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-10"
         >
-          <Link 
-            href="/dashboard" 
+          <Link
+            href="/dashboard"
             className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest mb-6 group"
           >
             <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
@@ -162,21 +162,30 @@ export default function ProjectDetailsPage() {
                 </div>
               </div>
               <p className="text-base text-muted-foreground font-medium max-w-2xl pt-1">{project.description}</p>
-              
+
               <div className="flex items-center gap-5 pt-4">
-                 <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    <Calendar className="size-3.5 opacity-50" />
-                    Created on {new Date(project.createdAt).toLocaleDateString()}
-                 </div>
-                 <div className="h-3 w-px bg-border" />
-                 <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    <Layers className="size-3.5 opacity-50" />
-                    {project.environments || 0} Environments
-                 </div>
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Calendar className="size-3.5 opacity-50" />
+                  Created on {new Date(project.createdAt).toLocaleDateString()}
+                </div>
+                <div className="h-3 w-px bg-border" />
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Layers className="size-3.5 opacity-50" />
+                  {project.environments || 0} Environments
+                </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 px-4 border-border/60 font-semibold"
+                onClick={() => router.push(`/dashboard/${id}/feature-flags`)}
+              >
+                <Settings className="size-4 mr-2 opacity-60" />
+                Feature Flags
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -186,10 +195,6 @@ export default function ProjectDetailsPage() {
                 <Trash2 className="size-4 mr-2 opacity-60" />
                 Delete Project
               </Button>
-              {/* <Button variant="outline" size="sm" className="h-9 px-4 border-border/60 font-semibold">
-                <Settings className="size-4 mr-2 opacity-60" />
-                Settings
-              </Button> */}
             </div>
           </div>
         </motion.div>
@@ -197,37 +202,37 @@ export default function ProjectDetailsPage() {
         {/* Environments Grid */}
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/40 pb-4">
-             <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                <Boxes className="size-4 opacity-50" />
-                Environments
-             </h2>
-             
-             <div className="flex items-center gap-3 w-full md:w-auto">
-               <div className="w-full md:w-64">
-                 <Input 
-                   type="search" 
-                   placeholder="Search environments..." 
-                   value={envSearchQuery}
-                   onChange={handleEnvSearch}
-                 />
-               </div>
-               <Button onClick={() => setIsCreateEnvOpen(true)}>
-                  <Plus className="size-3.5 mr-1.5" />
-                  Add Environment
-               </Button>
-             </div>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Boxes className="size-4 opacity-50" />
+              Environments
+            </h2>
+
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-full md:w-64">
+                <Input
+                  type="search"
+                  placeholder="Search environments..."
+                  value={envSearchQuery}
+                  onChange={handleEnvSearch}
+                />
+              </div>
+              <Button onClick={() => setIsCreateEnvOpen(true)}>
+                <Plus className="size-3.5 mr-1.5" />
+                Add Environment
+              </Button>
+            </div>
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
           >
             {isLoadingEnvs ? (
-               Array.from({ length: 3 }).map((_, i) => (
+              Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="h-[180px] rounded-2xl border border-border/50 bg-muted/20 animate-pulse flex items-center justify-center">
-                   <Loader2 className="size-6 text-muted-foreground animate-spin opacity-20" />
+                  <Loader2 className="size-6 text-muted-foreground animate-spin opacity-20" />
                 </div>
               ))
             ) : (
@@ -242,11 +247,11 @@ export default function ProjectDetailsPage() {
                 ))}
 
                 {environments.length === 0 && (
-                   <div className="col-span-full py-12 flex flex-col items-center justify-center border border-dashed border-border/60 rounded-2xl bg-muted/5">
-                      <Boxes className="size-8 text-muted-foreground/20 mb-4" />
-                      <p className="text-sm font-medium text-muted-foreground">No environments yet.</p>
-                      <p className="text-xs text-muted-foreground/60">Create one to get started.</p>
-                   </div>
+                  <div className="col-span-full py-12 flex flex-col items-center justify-center border border-dashed border-border/60 rounded-2xl bg-muted/5">
+                    <Boxes className="size-8 text-muted-foreground/20 mb-4" />
+                    <p className="text-sm font-medium text-muted-foreground">No environments yet.</p>
+                    <p className="text-xs text-muted-foreground/60">Create one to get started.</p>
+                  </div>
                 )}
               </>
             )}
