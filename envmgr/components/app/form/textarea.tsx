@@ -1,11 +1,10 @@
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
-import { Input as InputUI } from '@/components/ui/input'
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from '@/components/ui/input-group'
 import { Eye, EyeOff, Search } from 'lucide-react'
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const Input = ({
+const Textarea = ({
     label,
     placeholder,
     type = "text",
@@ -23,18 +22,18 @@ const Input = ({
 }: {
     label?: string,
     placeholder?: string,
-    type?: "text" | "password" | "email" | "number" | "search" | "url" | "tel" | "date" | "datetime-local" | "month" | "week",
+    type?: string,
     required?: boolean,
     value?: string,
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void,
+    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void,
+    onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void,
     description?: string,
     id?: string,
     autoComplete?: string,
     error?: string | null,
     touched?: boolean,
     className?: string,
-    onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void,
+    onPaste?: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void,
 }) => {
     const [showPassword, setShowPassword] = useState(false);
     const showError = touched && error;
@@ -46,60 +45,43 @@ const Input = ({
 
     return (
         <Field className={cn('gap-2', className)} data-invalid={showError}>
-            {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
+            {label && <FieldLabel className='font-normal text-muted-foreground' htmlFor={id}>{label}</FieldLabel>}
             <div className="relative">
-                {isSearch || isPassword ? (
-                    <InputGroup className={cn("h-11", isSearch && "has-[[data-slot=input-group-control]:focus-visible]:ring-0")}>
-                        {isSearch && (
-                            <InputGroupAddon align="inline-start">
-                                <Search className="size-4" />
-                            </InputGroupAddon>
-                        )}
-                        <InputGroupTextarea
-                            id={id}
-                            autoComplete={autoComplete}
-                            placeholder={placeholder}
-                            type={inputType}
-                            required={required}
-                            value={value}
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            onPaste={onPaste}
-                            aria-invalid={!!showError}
-                            className="h-full"
-                        />
-                        {isPassword && (
-                            <InputGroupAddon align="inline-end">
-                                <InputGroupButton
-                                    size="icon-xs"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    title={showPassword ? "Hide password" : "Show password"}
-                                >
-                                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                                </InputGroupButton>
-                            </InputGroupAddon>
-                        )}
-                    </InputGroup>
-                ) : (
-                    <InputUI
+                <InputGroup className={cn("min-h-[100px]", isSearch && "has-[[data-slot=input-group-control]:focus-visible]:ring-0")}>
+                    {isSearch && (
+                        <InputGroupAddon align="inline-start">
+                            <Search className="size-4" />
+                        </InputGroupAddon>
+                    )}
+                    <InputGroupTextarea
                         id={id}
                         autoComplete={autoComplete}
                         placeholder={placeholder}
-                        type={type}
                         required={required}
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         onPaste={onPaste}
                         aria-invalid={!!showError}
-                        className={cn(isSearch && "focus-visible:ring-0")}
+                        className="min-h-[100px] resize-y"
                     />
-                )}
+                    {isPassword && (
+                        <InputGroupAddon align="inline-end">
+                            <InputGroupButton
+                                size="icon-xs"
+                                onClick={() => setShowPassword(!showPassword)}
+                                title={showPassword ? "Hide password" : "Show password"}
+                            >
+                                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                            </InputGroupButton>
+                        </InputGroupAddon>
+                    )}
+                </InputGroup>
             </div>
-            {(description && !showError) && <FieldDescription>{description}</FieldDescription>}
+            {(description && !showError) && <FieldDescription className='font-normal text-xs text-muted-foreground'>{description}</FieldDescription>}
             {showError && <FieldError errors={[{ message: error }]} />}
         </Field>
     )
 }
 
-export default Input
+export default Textarea

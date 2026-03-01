@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { apiResponse } from "@/lib/utils/api-response"
 import { getAuthUser } from "@/lib/api-auth"
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const user = await getAuthUser(req)
         if (!user) return apiResponse({ message: "Unauthorized", status: 401 })
@@ -30,7 +30,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 }
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const user = await getAuthUser(req)
         if (!user) return apiResponse({ message: "Unauthorized", status: 401 })
