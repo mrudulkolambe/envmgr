@@ -1,7 +1,7 @@
 {
-  "name": "envmgr",
-  "version": "1.0.2",
-  "description": "CLI for managing environment variables across projects and environments",
+  "name": "@envmgr/core",
+  "version": "1.0.0",
+  "description": "CLI for managing environment variables and feature flags across projects and environments",
   "main": "dist/index.js",
   "bin": {
     "envmgr": "./dist/index.js"
