@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
 
@@ -26,30 +27,32 @@ export function DeleteVariableDialog({
 }: DeleteVariableDialogProps) {
   return (
     <Dialog open={!!variableKey} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[400px] bg-background/95 backdrop-blur-xl border-border/40 p-0">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="text-xl font-bold tracking-tight text-destructive flex items-center gap-2">
-            <Trash2 className="size-5" />
+      <DialogContent className="p-0 gap-0 sm:max-w-md bg-background border-border/40">
+        <DialogHeader className="p-4 gap-1 border-b border-border/40">
+          <DialogTitle className="text-lg font-semibold tracking-tight text-destructive flex items-center gap-2">
             Delete Variable
           </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            This action is permanent and cannot be undone.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="px-6 py-4">
+        <div className="p-4 pt-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
             Are you sure you want to delete{' '}
-            <strong className="text-foreground font-mono bg-muted/50 px-1 py-0.5 rounded">
+            <strong className="text-foreground font-mono bg-muted/50 px-1 py-0.5 rounded text-xs">
               {variableKey}
             </strong>
-            ? This action cannot be undone.
+            ?
           </p>
         </div>
 
-        <DialogFooter className="py-3 px-6 bg-muted/30 border-t border-border/40 gap-3">
-          <Button variant="ghost" onClick={onClose} disabled={isDeleting}>
+        <DialogFooter className="py-3 px-4 bg-muted/30 border-t border-border/40 gap-3">
+          <Button variant="ghost" onClick={onClose} disabled={isDeleting} className="font-semibold">
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm} loading={isDeleting}>
-            Delete
+          <Button variant="destructive" onClick={onConfirm} loading={isDeleting} className="font-semibold shadow-lg shadow-destructive/10">
+            Delete Variable
           </Button>
         </DialogFooter>
       </DialogContent>

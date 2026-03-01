@@ -1,6 +1,6 @@
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input as InputUI } from '@/components/ui/input'
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import { Eye, EyeOff, Search } from 'lucide-react'
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -46,7 +46,7 @@ const Input = ({
 
     return (
         <Field className={cn('gap-2', className)} data-invalid={showError}>
-            {label && <FieldLabel className='font-normal text-muted-foreground' htmlFor={id}>{label}</FieldLabel>}
+            {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
             <div className="relative">
                 {isSearch || isPassword ? (
                     <InputGroup className={cn("h-11", isSearch && "has-[[data-slot=input-group-control]:focus-visible]:ring-0")}>
@@ -55,7 +55,7 @@ const Input = ({
                                 <Search className="size-4" />
                             </InputGroupAddon>
                         )}
-                        <InputGroupInput
+                        <InputGroupTextarea
                             id={id}
                             autoComplete={autoComplete}
                             placeholder={placeholder}
@@ -96,7 +96,7 @@ const Input = ({
                     />
                 )}
             </div>
-            {(description && !showError) && <FieldDescription className='font-normal text-xs text-muted-foreground'>{description}</FieldDescription>}
+            {(description && !showError) && <FieldDescription>{description}</FieldDescription>}
             {showError && <FieldError errors={[{ message: error }]} />}
         </Field>
     )

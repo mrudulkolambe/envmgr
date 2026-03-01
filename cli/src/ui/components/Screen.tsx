@@ -11,7 +11,7 @@ export const Screen: React.FC<ScreenProps> = ({ children }) => {
 	return (
 		<Box flexDirection="column" paddingX={2} paddingY={1} minHeight={15}>
 			<Header />
-			
+
 			<Box flexGrow={1} flexDirection="row" borderStyle="bold" borderLeft borderRight={false} borderTop={false} borderBottom={false} borderColor="cyan" paddingLeft={1} marginLeft={1}>
 				<Box flexGrow={1} flexDirection="column">
 					{children}
@@ -32,4 +32,3 @@ export const Screen: React.FC<ScreenProps> = ({ children }) => {
 		</Box>
 	);
 };
-

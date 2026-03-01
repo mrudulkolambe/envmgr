@@ -18,6 +18,7 @@ class APIRoutes {
 
     static readonly FEATURE_FLAGS = '/feature-flags';
     static readonly FEATURE_FLAG_DETAILS = (id: string) => `/feature-flags/${id}`;
+    static readonly PROJECT_API_KEYS = (id: string) => `/projects/${id}/api-keys`;
 
     static readonly HEALTH = '/health';
 }

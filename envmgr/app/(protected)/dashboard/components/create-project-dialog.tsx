@@ -28,7 +28,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSuccess }: CreatePro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    
+
     if (name.trim().length < 3) {
       setError('Project name must be at least 3 characters')
       return
@@ -53,15 +53,15 @@ export function CreateProjectDialog({ open, onOpenChange, onSuccess }: CreatePro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md border-border/50 bg-background/95 backdrop-blur-xl p-0">
-        <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-xl font-semibold tracking-tight">Create New Project</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground font-medium">
+      <DialogContent className="p-0 gap-0">
+        <DialogHeader className="p-4 gap-1 border-b border-border/40">
+          <DialogTitle className="text-lg font-semibold tracking-tight">Create New Project</DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
             Add a new project to organize your environment variables and services.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="px-6 pb-4 space-y-4 border-t border-border/40 pt-4">
+          <div className="px-4 pb-4 space-y-4 pt-4">
             <Input
               id="name"
               label="Project Name"
@@ -81,7 +81,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSuccess }: CreatePro
               autoComplete="off"
             />
           </div>
-          <DialogFooter className="py-3 px-6 bg-muted/30 border-t border-border/40 gap-3">
+          <DialogFooter className="py-3 px-4 bg-muted/30 border-t border-border/40 gap-3">
             <Button
               type="button"
               variant="ghost"
@@ -94,7 +94,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSuccess }: CreatePro
             <Button
               type="submit"
               loading={loading}
-              className="bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20"
+              className="font-semibold"
             >
               Create Project
             </Button>

@@ -1,6 +1,6 @@
-import { jsx as _jsx } from "react/jsx-runtime";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState } from 'react';
-import { useApp } from 'ink';
+import { Box, Text, useApp } from 'ink';
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_API_URL } from '../../constants.js';
@@ -13,12 +13,14 @@ import { LinkFlow } from './LinkFlow.js';
 import { SyncFlow } from './SyncFlow.js';
 import { CreateEnvFlow } from './CreateEnvFlow.js';
 import { PushFlow } from './PushFlow.js';
+import Spinner from 'ink-spinner';
 export const App = ({ initialView = 'dashboard', isDryRun = false, shouldExit = false }) => {
     const [view, setView] = useState(initialView);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isConfigured, setIsConfigured] = useState(false);
     const [isLinked, setIsLinked] = useState(false);
     const [localConfig, setLocalConfig] = useState(null);
+    const [isChecking, setIsChecking] = useState(true);
     const { exit } = useApp();
     const handleCancel = () => {
         if (shouldExit) {
@@ -30,9 +32,12 @@ export const App = ({ initialView = 'dashboard', isDryRun = false, shouldExit = 
     };
     React.useEffect(() => {
         async function checkStatus() {
+            setIsChecking(true);
             const { getToken, getApiUrl } = await import('../../config/config.js');
-            setIsLoggedIn(!!getToken());
-            setIsConfigured(!!getApiUrl());
+            const token = getToken();
+            const apiUrl = getApiUrl();
+            setIsLoggedIn(!!token);
+            setIsConfigured(!!apiUrl);
             const configPath = path.join(process.cwd(), '.envmgr', 'config.json');
             let linked = false;
             if (fs.existsSync(configPath)) {
@@ -42,13 +47,29 @@ export const App = ({ initialView = 'dashboard', isDryRun = false, shouldExit = 
                     linked = !!config.projectId;
                 }
                 catch (e) {
-                    console.error('Failed to parse config');
+                    // Ignore
                 }
             }
             setIsLinked(linked);
+            // Auto-navigation for first-time users (Guided Flow)
+            if (initialView === 'dashboard') {
+                if (!apiUrl) {
+                    setView('configure');
+                }
+                else if (!token) {
+                    setView('login');
+                }
+                else if (!linked) {
+                    setView('link');
+                }
+            }
+            setIsChecking(false);
         }
         checkStatus();
     }, [view]);
+    if (isChecking && initialView === 'dashboard') {
+        return (_jsx(Box, { padding: 2, flexDirection: "column", alignItems: "center", children: _jsxs(Text, { color: "cyan", children: [_jsx(Spinner, { type: "dots" }), " Initializing Envmgr..."] }) }));
+    }
     const handleAction = (item) => {
         if (item.value === 'exit') {
             exit();

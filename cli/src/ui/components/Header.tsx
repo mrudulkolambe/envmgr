@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Text } from 'ink';
-import Gradient from 'ink-gradient';
 import { VERSION } from '../../constants.js';
 
 const LOGO = `

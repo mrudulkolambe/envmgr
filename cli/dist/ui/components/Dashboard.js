@@ -6,8 +6,8 @@ export const Dashboard = ({ onSelect, isLoggedIn, isConfigured, isLinked }) => {
     const items = [
         isLoggedIn && isLinked && { label: 'Sync Variables', value: 'sync' },
         isLoggedIn && isLinked && { label: 'Push Variables', value: 'push' },
-        isLoggedIn && isLinked && { label: 'Add Environment', value: 'create-env' },
         isLoggedIn && { label: isLinked ? 'Switch Environment' : 'Link Project', value: 'link' },
+        isLoggedIn && isLinked && { label: 'Add Environment', value: 'create-env' },
         isLoggedIn && { label: 'Status', value: 'status' },
         !isLoggedIn && isConfigured && { label: 'Login', value: 'login' },
         { label: 'Configure', value: 'configure' },

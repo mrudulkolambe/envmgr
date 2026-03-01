@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -49,52 +50,47 @@ export function ConfirmDeleteDialog({
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="sm:max-w-[480px] bg-background/95 backdrop-blur-xl border-border/40 p-0">
-        <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-xl font-semibold tracking-tight flex items-center gap-2 text-foreground">
-            <Trash2 className="size-5 text-destructive" />
+      <DialogContent className="p-0 gap-0 sm:max-w-md bg-background border-border/40">
+        <DialogHeader className="p-4 gap-1 border-b border-border/40">
+          <DialogTitle className="text-lg font-semibold tracking-tight flex items-center gap-2 text-destructive">
             {title}
           </DialogTitle>
-          <p className="text-sm text-muted-foreground leading-relaxed mt-2">
+          <DialogDescription className="text-xs text-muted-foreground">
             {description}
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="px-6 pb-4 space-y-4 border-t border-border/40 pt-4">
-          {/* Name confirmation */}
+        <div className="p-4 space-y-4 pt-4">
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-muted-foreground">
-              To confirm, type{' '}
-              <strong className="text-foreground">"{nameConfirmation}"</strong>
+            <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              To confirm, type <span className="text-foreground border-b border-muted">"{nameConfirmation}"</span>
             </label>
             <Input
               value={nameInput}
               onChange={(e) => setNameInput(e.target.value)}
               placeholder={nameConfirmation}
               className={cn(
-                'text-sm transition-colors',
-                nameInput && nameInput !== nameConfirmation && 'border-destructive/50 focus-visible:ring-destructive/30',
-                nameInput === nameConfirmation && 'border-emerald-500/50 focus-visible:ring-emerald-500/30'
+                'h-10 text-sm transition-all',
+                nameInput && nameInput !== nameConfirmation && 'border-destructive/40 focus-visible:ring-destructive/20',
+                nameInput === nameConfirmation && 'border-emerald-500/40 focus-visible:ring-emerald-500/20'
               )}
               autoComplete="off"
               spellCheck={false}
             />
           </div>
 
-          {/* Phrase confirmation */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-muted-foreground">
-              To confirm, type{' '}
-              <strong className="text-foreground">"{phraseConfirmation}"</strong>
+            <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              To confirm, type <span className="text-foreground border-b border-muted">"{phraseConfirmation}"</span>
             </label>
             <Input
               value={phraseInput}
               onChange={(e) => setPhraseInput(e.target.value)}
               placeholder={phraseConfirmation}
               className={cn(
-                'text-sm transition-colors',
-                phraseInput && phraseInput !== phraseConfirmation && 'border-destructive/50 focus-visible:ring-destructive/30',
-                phraseInput === phraseConfirmation && 'border-emerald-500/50 focus-visible:ring-emerald-500/30'
+                'h-10 text-sm transition-all',
+                phraseInput && phraseInput !== phraseConfirmation && 'border-destructive/40 focus-visible:ring-destructive/20',
+                phraseInput === phraseConfirmation && 'border-emerald-500/40 focus-visible:ring-emerald-500/20'
               )}
               autoComplete="off"
               spellCheck={false}
@@ -102,8 +98,8 @@ export function ConfirmDeleteDialog({
           </div>
         </div>
 
-        <DialogFooter className="py-3 px-6 bg-muted/30 border-t border-border/40 gap-3">
-          <Button variant="ghost" onClick={handleClose} disabled={isDeleting}>
+        <DialogFooter className="py-3 px-4 bg-muted/30 border-t border-border/40 gap-3">
+          <Button variant="ghost" onClick={handleClose} disabled={isDeleting} className="font-semibold">
             Cancel
           </Button>
           <Button
@@ -111,6 +107,7 @@ export function ConfirmDeleteDialog({
             onClick={onConfirm}
             loading={isDeleting}
             disabled={!isValid}
+            className="font-semibold shadow-lg shadow-destructive/10"
           >
             {title}
           </Button>

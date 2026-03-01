@@ -4,16 +4,15 @@ import React, { useState } from 'react'
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import Input from '@/components/app/form/Input'
-import { Textarea } from '@/components/ui/textarea'
 import { featureFlagService } from '../../../service/feature-flag.service'
 import { toast } from 'sonner'
-import { Flag, Keyboard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface CreateFeatureFlagDialogProps {
@@ -50,9 +49,9 @@ export function CreateFeatureFlagDialog({
     const generateKey = (val: string) => {
         return val
             .toLowerCase()
-            .replace(/[^a-z0-9]/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-|-$/g, '')
+            .replace(/[^a-z0-9]/g, '_')
+            .replace(/_+/g, '_')
+            .replace(/^_|_$/g, '')
     }
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,7 +69,7 @@ export function CreateFeatureFlagDialog({
         const newErrors: Record<string, string> = {}
         if (!name.trim()) newErrors.name = 'Name is required'
         if (!key.trim()) newErrors.key = 'Key is required'
-        else if (!/^[a-z0-9_-]+$/.test(key)) newErrors.key = 'Invalid key format'
+        else if (!/^[a-z0-9_]+$/.test(key)) newErrors.key = 'Invalid key format (only lowercase, numbers, and underscores)'
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors)
@@ -99,83 +98,70 @@ export function CreateFeatureFlagDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[500px] bg-background/95 backdrop-blur-2xl border-border/40 p-0 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
-
-                <DialogHeader className="px-8 pt-8 pb-6 border-b border-border/40 relative z-10">
-                    <div className="size-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 border border-primary/20">
-                        <Flag className="size-6 text-primary" />
-                    </div>
-                    <DialogTitle className="text-2xl font-bold tracking-tight">Create Feature Flag</DialogTitle>
-                    <p className="text-sm text-muted-foreground mt-1">
+            <DialogContent className="p-0 gap-0 sm:max-w-md">
+                <DialogHeader className="p-4 gap-1 border-b border-border/40">
+                    <DialogTitle className="text-lg font-semibold tracking-tight">
+                        Create Feature Flag
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground">
                         Add a new feature flag to your project to control feature rollout.
-                    </p>
+                    </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 relative z-10">
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground/70">
-                            Flag Name
-                        </label>
-                        <Input
-                            placeholder="e.g. Beta Access"
-                            value={name}
-                            onChange={handleNameChange}
-                            // autoFocus
-                            className={cn(errors.name && "border-destructive focus-visible:ring-destructive/30")}
-                        />
-                        {errors.name && <p className="text-[10px] font-bold text-destructive uppercase tracking-wider">{errors.name}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                            <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground/70 flex items-center gap-1.5">
-                                <Keyboard className="size-3.5" />
-                                Unique Key
-                            </label>
+                <form onSubmit={handleSubmit}>
+                    <div className="px-4 pb-4 space-y-4 pt-4">
+                        <div className="space-y-2">
+                            <Input
+                                label='Flag Name'
+                                placeholder="e.g. Beta Access"
+                                value={name}
+                                onChange={handleNameChange}
+                                error={errors.name}
+                                touched={!!errors.name}
+                            />
                         </div>
-                        <Input
-                            placeholder="e.g. beta-access"
-                            value={key}
-                            onChange={(e) => setKey(generateKey(e.target.value))}
-                            className={cn("font-mono text-sm", errors.key && "border-destructive focus-visible:ring-destructive/30")}
-                        />
-                        <p className="text-[10px] text-muted-foreground/60 leading-relaxed">
-                            Use this key in your code to check if the flag is enabled. Only lowercase letters, numbers, and hyphens.
-                        </p>
-                        {errors.key && <p className="text-[10px] font-bold text-destructive uppercase tracking-wider">{errors.key}</p>}
+
+                        <div className="space-y-2">
+                            <Input
+                                label='Unique Key'
+                                placeholder="e.g. beta_access"
+                                value={key}
+                                onChange={(e) => setKey(generateKey(e.target.value))}
+                                error={errors.key}
+                                touched={!!errors.key}
+                                description="Only lowercase letters, numbers, and underscores."
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Input
+                                label='Description (Optional)'
+                                placeholder="What does this feature flag control?"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground/70">
-                            Description (Optional)
-                        </label>
-                        <Textarea
-                            placeholder="What does this feature flag control?"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="resize-none h-24 bg-muted/30 border-border/50 focus-visible:ring-primary/30 transition-colors"
-                        />
-                    </div>
+                    <DialogFooter className="py-3 px-4 bg-muted/30 border-t border-border/40 gap-3">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => handleOpenChange(false)}
+                            disabled={isLoading}
+                            className="font-semibold"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            loading={isLoading}
+                            className="font-semibold"
+                        >
+                            Create Flag
+                        </Button>
+                    </DialogFooter>
                 </form>
-
-                <DialogFooter className="px-8 py-6 bg-muted/30 border-t border-border/40 gap-3 relative z-10">
-                    <Button
-                        variant="ghost"
-                        onClick={() => handleOpenChange(false)}
-                        disabled={isLoading}
-                        className="font-semibold"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleSubmit}
-                        loading={isLoading}
-                        className="px-8 shadow-lg shadow-primary/20"
-                    >
-                        Create Flag
-                    </Button>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

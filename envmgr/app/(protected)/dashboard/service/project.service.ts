@@ -175,6 +175,30 @@ class ProjectService {
             onError(response.message || 'Failed to delete environment', response.status);
         }
     }
+
+    async listApiKeys(projectId: string, { onLoading, onSuccess, onError }: ServiceCallbacks<any[]>) {
+        onLoading(true);
+        const response = await API.get<any[]>(APIRoutes.PROJECT_API_KEYS(projectId));
+        onLoading(false);
+
+        if (response.success && response.data) {
+            onSuccess(response.data);
+        } else {
+            onError(response.message || 'Failed to fetch API keys', response.status);
+        }
+    }
+
+    async createApiKey(projectId: string, data: { name: string }, { onLoading, onSuccess, onError }: ServiceCallbacks<any>) {
+        onLoading(true);
+        const response = await API.post<any>(APIRoutes.PROJECT_API_KEYS(projectId), data);
+        onLoading(false);
+
+        if (response.success && response.data) {
+            onSuccess(response.data);
+        } else {
+            onError(response.message || 'Failed to create API key', response.status);
+        }
+    }
 }
 
 export const projectService = new ProjectService();

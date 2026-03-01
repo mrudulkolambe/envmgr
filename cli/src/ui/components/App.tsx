@@ -12,6 +12,7 @@ import { LinkFlow } from './LinkFlow.js';
 import { SyncFlow } from './SyncFlow.js';
 import { CreateEnvFlow } from './CreateEnvFlow.js';
 import { PushFlow } from './PushFlow.js';
+import Spinner from 'ink-spinner';
 
 type View = 'dashboard' | 'login' | 'configure' | 'status' | 'logout' | 'link' | 'sync' | 'create-env' | 'push';
 
@@ -27,6 +28,7 @@ export const App: React.FC<AppProps> = ({ initialView = 'dashboard', isDryRun = 
 	const [isConfigured, setIsConfigured] = useState(false);
 	const [isLinked, setIsLinked] = useState(false);
 	const [localConfig, setLocalConfig] = useState<any>(null);
+	const [isChecking, setIsChecking] = useState(true);
 	const { exit } = useApp();
 
 	const handleCancel = () => {
@@ -39,10 +41,14 @@ export const App: React.FC<AppProps> = ({ initialView = 'dashboard', isDryRun = 
 
 	React.useEffect(() => {
 		async function checkStatus() {
+			setIsChecking(true);
 			const { getToken, getApiUrl } = await import('../../config/config.js');
-			setIsLoggedIn(!!getToken());
-			setIsConfigured(!!getApiUrl());
-			
+			const token = getToken();
+			const apiUrl = getApiUrl();
+
+			setIsLoggedIn(!!token);
+			setIsConfigured(!!apiUrl);
+
 			const configPath = path.join(process.cwd(), '.envmgr', 'config.json');
 			let linked = false;
 			if (fs.existsSync(configPath)) {
@@ -51,13 +57,33 @@ export const App: React.FC<AppProps> = ({ initialView = 'dashboard', isDryRun = 
 					setLocalConfig(config);
 					linked = !!config.projectId;
 				} catch (e) {
-					console.error('Failed to parse config');
+					// Ignore
 				}
 			}
 			setIsLinked(linked);
+
+			// Auto-navigation for first-time users (Guided Flow)
+			if (initialView === 'dashboard') {
+				if (!apiUrl) {
+					setView('configure');
+				} else if (!token) {
+					setView('login');
+				} else if (!linked) {
+					setView('link');
+				}
+			}
+			setIsChecking(false);
 		}
 		checkStatus();
 	}, [view]);
+
+	if (isChecking && initialView === 'dashboard') {
+		return (
+			<Box padding={2} flexDirection="column" alignItems="center">
+				<Text color="cyan"><Spinner type="dots" /> Initializing Envmgr...</Text>
+			</Box>
+		);
+	}
 
 	const handleAction = (item: { value: string }) => {
 		if (item.value === 'exit') {
@@ -70,7 +96,7 @@ export const App: React.FC<AppProps> = ({ initialView = 'dashboard', isDryRun = 
 	const handleLogin = async (email: string, pass: string) => {
 		const { requireApiConfig } = await import('../../config/guard.js');
 		const { saveToken } = await import('../../config/config.js');
-		
+
 		const apiUrl = requireApiConfig();
 		const res = await fetch(`${apiUrl}/api/auth/login`, {
 			method: "POST",
@@ -92,7 +118,7 @@ export const App: React.FC<AppProps> = ({ initialView = 'dashboard', isDryRun = 
 		}
 
 		saveToken(data.data.token);
-		
+
 		// Wait a bit before returning to dashboard or exiting
 		setTimeout(() => handleCancel(), 2000);
 	};
@@ -109,10 +135,10 @@ export const App: React.FC<AppProps> = ({ initialView = 'dashboard', isDryRun = 
 			return <LoginForm onSubmit={handleLogin} onCancel={handleCancel} />;
 		case 'configure':
 			return (
-				<ConfigureForm 
-					onSubmit={handleConfigure} 
-					onCancel={handleCancel} 
-					defaultUrl={DEFAULT_API_URL} 
+				<ConfigureForm
+					onSubmit={handleConfigure}
+					onCancel={handleCancel}
+					defaultUrl={DEFAULT_API_URL}
 					config={localConfig}
 					isLoggedIn={isLoggedIn}
 					onEditProject={() => setView('link')}

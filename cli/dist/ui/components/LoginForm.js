@@ -20,6 +20,10 @@ export const LoginForm = ({ onSubmit, onCancel }) => {
             setError(null);
             return;
         }
+        if (key.tab || (key.ctrl && input === 'i')) {
+            setStep(prev => (prev === 'email' ? 'password' : 'email'));
+            return;
+        }
         if ((key.escape || input === '\u001b') && step !== 'submitting') {
             onCancel();
         }
@@ -44,5 +48,5 @@ export const LoginForm = ({ onSubmit, onCancel }) => {
     if (step === 'success') {
         return (_jsx(Screen, { children: _jsxs(Box, { flexDirection: "column", alignItems: "center", justifyContent: "center", flexGrow: 1, children: [_jsx(Text, { color: "green", bold: true, children: "\u2713 Logged in successfully!" }), _jsxs(Text, { dimColor: true, children: ["Welcome back, ", email] }), _jsx(Box, { marginTop: 1, children: _jsx(Text, { dimColor: true, children: "Returning to menu..." }) })] }) }));
     }
-    return (_jsx(Screen, { children: _jsxs(Box, { flexDirection: "column", marginTop: 1, children: [_jsx(Text, { bold: true, color: "cyan", children: "Login to your account" }), _jsxs(Box, { marginTop: 1, children: [_jsx(Box, { marginRight: 1, children: _jsx(Text, { bold: true, children: "Email:" }) }), step === 'email' ? (_jsx(TextInput, { value: email, onChange: setEmail, onSubmit: handleEmailSubmit })) : (_jsx(Text, { color: "gray", children: email }))] }), step !== 'email' && (_jsxs(Box, { children: [_jsx(Box, { marginRight: 1, children: _jsx(Text, { bold: true, children: "Password:" }) }), step === 'password' ? (_jsx(TextInput, { value: password, onChange: setPassword, onSubmit: handlePasswordSubmit, mask: "*" })) : (_jsx(Text, { color: "gray", children: "********" }))] })), _jsxs(Box, { marginTop: 1, children: [step === 'submitting' && (_jsx(Box, { children: _jsxs(Text, { color: "yellow", children: [_jsx(Spinner, { type: "dots" }), " Logging in..."] }) })), step === 'error' && (_jsxs(Box, { flexDirection: "column", children: [_jsxs(Text, { color: "red", children: ["Error: ", error] }), _jsx(Text, { dimColor: true, children: "Press Enter to try again or Escape to cancel" })] }))] })] }) }));
+    return (_jsx(Screen, { children: _jsxs(Box, { flexDirection: "column", marginTop: 1, children: [_jsx(Text, { bold: true, color: "cyan", children: "Login to Envmgr" }), _jsxs(Box, { marginTop: 1, flexDirection: "column", children: [_jsxs(Box, { flexDirection: "row", children: [_jsx(Text, { bold: true, children: "Email: " }), _jsx(TextInput, { value: email, onChange: setEmail, onSubmit: handleEmailSubmit, focus: step === 'email', placeholder: "you@example.com" })] }), _jsxs(Box, { flexDirection: "row", marginTop: 1, children: [_jsx(Text, { bold: true, children: "Password: " }), _jsx(TextInput, { value: password, onChange: setPassword, onSubmit: handlePasswordSubmit, focus: step === 'password', mask: "*", placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" })] })] }), error && (_jsx(Box, { marginTop: 1, children: _jsxs(Text, { color: "red", children: ["\u26A0 ", error] }) })), _jsx(Box, { marginTop: 1, children: step === 'submitting' ? (_jsxs(Text, { color: "yellow", children: [_jsx(Spinner, { type: "dots" }), " Logging in..."] })) : (_jsx(Text, { dimColor: true, children: "Press Tab(Space) to switch \u2022 Enter to confirm \u2022 Esc to cancel" })) })] }) }));
 };

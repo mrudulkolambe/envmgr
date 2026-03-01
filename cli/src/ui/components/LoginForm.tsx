@@ -28,6 +28,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onCancel }) => {
 			return;
 		}
 
+		if (key.tab || (key.ctrl && input === 'i')) {
+			setStep(prev => (prev === 'email' ? 'password' : 'email'));
+			return;
+		}
+
 		if ((key.escape || input === '\u001b') && step !== 'submitting') {
 			onCancel();
 		}
@@ -67,45 +72,45 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onCancel }) => {
 	return (
 		<Screen>
 			<Box flexDirection="column" marginTop={1}>
-				<Text bold color="cyan">Login to your account</Text>
-				
-				<Box marginTop={1}>
-					<Box marginRight={1}>
-						<Text bold>Email:</Text>
+				<Text bold color="cyan">Login to Envmgr</Text>
+
+				<Box marginTop={1} flexDirection="column">
+					<Box flexDirection="row">
+						<Text bold>Email: </Text>
+						<TextInput
+							value={email}
+							onChange={setEmail}
+							onSubmit={handleEmailSubmit}
+							focus={step === 'email'}
+							placeholder="you@example.com"
+						/>
 					</Box>
-					{step === 'email' ? (
-						<TextInput value={email} onChange={setEmail} onSubmit={handleEmailSubmit} />
-					) : (
-						<Text color="gray">{email}</Text>
-					)}
+					<Box flexDirection="row" marginTop={1}>
+						<Text bold>Password: </Text>
+						<TextInput
+							value={password}
+							onChange={setPassword}
+							onSubmit={handlePasswordSubmit}
+							focus={step === 'password'}
+							mask="*"
+							placeholder="••••••••"
+						/>
+					</Box>
 				</Box>
 
-				{step !== 'email' && (
-					<Box>
-						<Box marginRight={1}>
-							<Text bold>Password:</Text>
-						</Box>
-						{step === 'password' ? (
-							<TextInput value={password} onChange={setPassword} onSubmit={handlePasswordSubmit} mask="*" />
-						) : (
-							<Text color="gray">********</Text>
-						)}
+				{error && (
+					<Box marginTop={1}>
+						<Text color="red">⚠ {error}</Text>
 					</Box>
 				)}
 
 				<Box marginTop={1}>
-					{step === 'submitting' && (
-						<Box>
-							<Text color="yellow">
-								<Spinner type="dots" /> Logging in...
-							</Text>
-						</Box>
-					)}
-					{step === 'error' && (
-						<Box flexDirection="column">
-							<Text color="red">Error: {error}</Text>
-							<Text dimColor>Press Enter to try again or Escape to cancel</Text>
-						</Box>
+					{step === 'submitting' ? (
+						<Text color="yellow">
+							<Spinner type="dots" /> Logging in...
+						</Text>
+					) : (
+						<Text dimColor>Press Tab(Space) to switch • Enter to confirm • Esc to cancel</Text>
 					)}
 				</Box>
 			</Box>

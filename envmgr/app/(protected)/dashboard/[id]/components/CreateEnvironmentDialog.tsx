@@ -65,18 +65,18 @@ export function CreateEnvironmentDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="sm:max-w-md border-border/50 bg-background/95 backdrop-blur-xl p-0">
-        <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-xl font-semibold tracking-tight">
+      <DialogContent className="p-0 gap-0">
+        <DialogHeader className="p-4 gap-1 border-b border-border/40">
+          <DialogTitle className="text-lg font-semibold tracking-tight">
             Add Environment
           </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground font-medium">
+          <DialogDescription className="text-xs text-muted-foreground">
             Create a new environment to manage a separate set of variables (e.g. dev, staging, production).
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
-          <div className="px-6 pb-4 space-y-4 border-t border-border/40 pt-4">
+          <div className="px-4 pb-4 space-y-4 pt-4">
             <Input
               id="env-name"
               label="Environment Name"
@@ -92,7 +92,7 @@ export function CreateEnvironmentDialog({
             />
           </div>
 
-          <DialogFooter className="py-3 px-6 bg-muted/30 border-t border-border/40 gap-3">
+          <DialogFooter className="py-3 px-4 bg-muted/30 border-t border-border/40 gap-3">
             <Button
               type="button"
               variant="ghost"

@@ -48,7 +48,7 @@ export const SyncFlow: React.FC<SyncFlowProps> = ({ onCancel, isDryRun = false }
 
 				const { data: variables } = await fetchVariables(config.environmentId);
 				const filePath = path.join(process.cwd(), config.envFilePath);
-				
+
 				if (isDryRun) {
 					const localVars: Record<string, string> = {};
 					if (fs.existsSync(filePath)) {
@@ -100,7 +100,7 @@ export const SyncFlow: React.FC<SyncFlowProps> = ({ onCancel, isDryRun = false }
 		<Screen>
 			<Box flexDirection="column" marginTop={1}>
 				<Text bold color="cyan">Synchronizing Variables</Text>
-				
+
 				{details && (
 					<Box marginTop={1} flexDirection="column">
 						<Text dimColor>Project: <Text color="green">{details.project}</Text></Text>

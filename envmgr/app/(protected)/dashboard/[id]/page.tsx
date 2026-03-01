@@ -14,7 +14,8 @@ import {
   Calendar,
   Layers,
   Activity,
-  Trash2
+  Trash2,
+  Key
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -27,6 +28,7 @@ import { EnvironmentCard } from './components/environment-card'
 import { ConfirmDeleteDialog } from '@/components/app/ConfirmDeleteDialog'
 import { DashboardNav } from '@/components/app/DashboardNav'
 import { CreateEnvironmentDialog } from './components/CreateEnvironmentDialog'
+import { ApiKeysDialog } from './components/ApiKeysDialog'
 
 export default function ProjectDetailsPage() {
   const { id } = useParams() as { id: string }
@@ -41,6 +43,7 @@ export default function ProjectDetailsPage() {
   const [showDeleteProject, setShowDeleteProject] = useState(false)
   const [isDeletingProject, setIsDeletingProject] = useState(false)
   const [isCreateEnvOpen, setIsCreateEnvOpen] = useState(false)
+  const [isApiKeysOpen, setIsApiKeysOpen] = useState(false)
 
   const fetchProjectDetails = useCallback(() => {
     projectService.getProject(
@@ -181,6 +184,15 @@ export default function ProjectDetailsPage() {
                 variant="outline"
                 size="sm"
                 className="h-9 px-4 border-border/60 font-semibold"
+                onClick={() => setIsApiKeysOpen(true)}
+              >
+                <Key className="size-4 mr-2 opacity-60" />
+                SDK Keys
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 px-4 border-border/60 font-semibold"
                 onClick={() => router.push(`/dashboard/${id}/feature-flags`)}
               >
                 <Settings className="size-4 mr-2 opacity-60" />
@@ -277,6 +289,12 @@ export default function ProjectDetailsPage() {
         projectId={id}
         onOpenChange={setIsCreateEnvOpen}
         onSuccess={() => fetchEnvironments(debouncedEnvSearch)}
+      />
+
+      <ApiKeysDialog
+        open={isApiKeysOpen}
+        projectId={id}
+        onOpenChange={setIsApiKeysOpen}
       />
     </div>
   )

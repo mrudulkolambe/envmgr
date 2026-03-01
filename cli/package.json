@@ -1,5 +1,5 @@
 {
-  "name": "envmgr-cli",
+  "name": "envmgr",
   "version": "1.0.2",
   "description": "CLI for managing environment variables across projects and environments",
   "main": "dist/index.js",
@@ -7,6 +7,11 @@
     "envmgr": "./dist/index.js"
   },
   "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./react": "./dist/react/index.js",
+    "./sdk": "./dist/core/sdk.js"
+  },
   "files": [
     "dist",
     "README.md"

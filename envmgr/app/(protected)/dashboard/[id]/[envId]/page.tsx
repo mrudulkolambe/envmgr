@@ -4,11 +4,11 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Logo } from '@/components/app/logo'
 import { Button } from '@/components/ui/button'
-import { 
-  Plus, 
-  Loader2, 
-  ArrowLeft, 
-  Boxes, 
+import {
+  Plus,
+  Loader2,
+  ArrowLeft,
+  Boxes,
   Calendar,
   Activity,
   Key,
@@ -22,7 +22,7 @@ import {
   MoreVertical,
   Terminal,
 } from 'lucide-react'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -49,7 +49,7 @@ export default function EnvironmentDetailsPage() {
   const { id, envId } = useParams() as { id: string, envId: string }
   const router = useRouter()
   const { user } = useUser()
-  
+
   const [environment, setEnvironment] = useState<Environment | null>(null)
   const [variables, setVariables] = useState<Variable[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -134,7 +134,7 @@ export default function EnvironmentDetailsPage() {
         const firstEqualIndex = line.indexOf('=')
         const key = line.substring(0, firstEqualIndex).trim()
         let value = line.substring(firstEqualIndex + 1).trim()
-        
+
         // Remove surrounding quotes
         if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
           value = value.substring(1, value.length - 1)
@@ -171,12 +171,12 @@ export default function EnvironmentDetailsPage() {
   const updateDraftRow = (index: number, field: 'key' | 'value' | 'isSecret', val: any) => {
     const updated = [...draftVariables]
     updated[index] = { ...updated[index], [field]: val }
-    
+
     // Auto-detect secret if key changes
     if (field === 'key') {
       updated[index].isSecret = /SECRET|PASSWORD|TOKEN|KEY|CREDENTIAL|AUTH|PWD/i.test(val)
     }
-    
+
     setDraftVariables(updated)
   }
 
@@ -301,14 +301,14 @@ export default function EnvironmentDetailsPage() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8 text-center">
         <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center mb-6">
-           <Activity className="size-8 text-destructive" />
+          <Activity className="size-8 text-destructive" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Environment not found</h1>
         <p className="text-muted-foreground max-w-sm mb-8">
           The environment you're looking for doesn't exist or you don't have permission to view it.
         </p>
         <Button onClick={() => router.push(`/dashboard/${id}`)}>
-           Back to Project
+          Back to Project
         </Button>
       </div>
     )
@@ -323,13 +323,13 @@ export default function EnvironmentDetailsPage() {
       <DashboardNav />
 
       <main className="w-full px-8 py-10 relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-10"
         >
-          <Link 
-            href={`/dashboard/${id}`} 
+          <Link
+            href={`/dashboard/${id}`}
             className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest mb-6 group"
           >
             <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
@@ -348,20 +348,20 @@ export default function EnvironmentDetailsPage() {
                 <Boxes className="size-4 opacity-50" />
                 Environment ID: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">{environment.id}</code>
               </p>
-              
+
               <div className="flex items-center gap-5 pt-4">
-                 <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    <Calendar className="size-3.5 opacity-50" />
-                    Updated on {new Date(environment.updatedAt).toLocaleDateString()}
-                 </div>
-                 <div className="h-3 w-px bg-border" />
-                 <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    <Key className="size-3.5 opacity-50" />
-                    {variables.length} Variables
-                 </div>
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Calendar className="size-3.5 opacity-50" />
+                  Updated on {new Date(environment.updatedAt).toLocaleDateString()}
+                </div>
+                <div className="h-3 w-px bg-border" />
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Key className="size-3.5 opacity-50" />
+                  {variables.length} Variables
+                </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
@@ -383,175 +383,188 @@ export default function EnvironmentDetailsPage() {
         {/* Variables Section */}
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/40 pb-4">
-             <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                <Key className="size-4 opacity-50" />
-                Variables
-             </h2>
-             
-             <div className="flex items-center gap-3 w-full md:w-auto">
-                <div className="w-full md:w-80">
-                    <Input 
-                       type="search" 
-                       placeholder="Search variables..." 
-                       value={searchQuery}
-                       onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" onClick={openBulkEdit}>
-                      Bulk Edit
-                  </Button>
-                  <Button onClick={() => {
-                    setDraftVariables([{ id: Math.random().toString(36).substr(2, 9), key: '', value: '', isSecret: false }])
-                    setIsAddDialogOpen(true)
-                  }}>
-                      <Plus className="size-4 mr-2" />
-                      Add Variable
-                  </Button>
-                </div>
-             </div>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Key className="size-4 opacity-50" />
+              Variables
+            </h2>
+
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-full md:w-80">
+                <Input
+                  type="search"
+                  placeholder="Search variables..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" onClick={openBulkEdit}>
+                  Bulk Edit
+                </Button>
+                <Button onClick={() => {
+                  setDraftVariables([{ id: Math.random().toString(36).substr(2, 9), key: '', value: '', isSecret: false }])
+                  setIsAddDialogOpen(true)
+                }}>
+                  <Plus className="size-4 mr-2" />
+                  Add Variable
+                </Button>
+              </div>
+            </div>
           </div>
 
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="space-y-3"
+            className="rounded-xl border border-border/40 bg-background/30 backdrop-blur-sm overflow-hidden"
           >
-            {isLoadingVars ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-20 rounded-2xl bg-muted/20 animate-pulse border border-border/30" />
-              ))
-            ) : (
-              <AnimatePresence mode='popLayout'>
-                {filteredVariables.map((variable) => (
-                  <motion.div
-                     key={variable.id}
-                     layout
-                     initial={{ opacity: 0, scale: 0.98 }}
-                     animate={{ opacity: 1, scale: 1 }}
-                     exit={{ opacity: 0, scale: 0.98 }}
-                     className="group grid grid-cols-3 items-center gap-4 p-4 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-md hover:border-primary/20 hover:bg-muted/5 transition-all duration-300"
-                   >
-                     {/* Left: Icon and Key */}
-                     <div className="flex items-center gap-4 min-w-0 juse">
-                       <div className={cn(
-                         "size-10 rounded-xl flex items-center justify-center border shrink-0 transition-transform duration-300 group-hover:scale-105",
-                         variable.isSecret ? "bg-amber-500/5 border-amber-500/10 text-amber-500/60" : "bg-primary/5 border-primary/10 text-primary/60"
-                       )}>
-                         {variable.isSecret ? <Key className="size-5" /> : <Terminal className="size-5" />}
-                       </div>
-                       <p className="text-sm font-bold tracking-tight text-foreground transition-colors group-hover:text-primary leading-tight truncate">
-                         {variable.key}
-                       </p>
-                     </div>
+            {/* Table Header */}
+            <div className="grid grid-cols-[1.5fr_1fr_120px_100px] gap-4 px-4 py-3 bg-muted/20 border-b border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
+              <div>Variable Name</div>
+              <div>Value</div>
+              <div className="hidden md:block">Updated</div>
+              <div className="text-right">Actions</div>
+            </div>
 
-                     {/* Middle: Value — centered, fixed column, never expands */}
-                     <div
-                       className="flex items-center justify-center gap-2 cursor-pointer group/value overflow-hidden"
-                       onClick={() => {
-                         if (showSecretId !== variable.id) {
-                           setShowSecretId(variable.id)
-                         } else {
-                           copyToClipboard(variable.value, `val-${variable.id}`)
-                         }
-                       }}
-                     >
-                       {showSecretId !== variable.id ? (
-                         <>
-                           <Eye className="size-3.5 text-muted-foreground/30 group-hover/value:text-muted-foreground/60 transition-colors shrink-0" />
-                           <div className="flex gap-[3px] items-center shrink-0">
-                             {Array.from({ length: 8 }).map((_, i) => (
-                               <div key={i} className="size-[5px] rounded-full bg-muted-foreground/25 group-hover/value:bg-muted-foreground/40 transition-colors" />
-                             ))}
-                           </div>
-                         </>
-                       ) : (
-                         <>
-                           <EyeOff
-                             className="size-3.5 text-muted-foreground/30 hover:text-emerald-500 transition-colors shrink-0"
-                             onClick={(e) => {
-                               e.stopPropagation()
-                               setShowSecretId(null)
-                             }}
-                           />
-                           <code className="text-[11px] font-mono text-muted-foreground group-hover/value:text-foreground transition-colors truncate min-w-0 block">
-                             {variable.value}
-                           </code>
-                           {copiedKey === `val-${variable.id}` && (
-                             <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                           )}
-                         </>
-                       )}
-                     </div>
-
-                     {/* Right: Meta + Actions */}
-                     <div className="flex items-center gap-4 shrink-0 justify-end">
-                        <p className="hidden md:block text-[11px] font-medium text-muted-foreground/60 whitespace-nowrap">
-                           Added {new Date(variable.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                        </p>
-                        <div className="size-8 rounded-full bg-linear-to-br from-primary/20 to-indigo-500/20 border border-white/5 flex items-center justify-center shadow-inner shrink-0">
-                           <span className="text-[9px] font-bold text-primary/70">{user?.name?.substring(0,2).toUpperCase()}</span>
+            <div className="divide-y divide-border/40">
+              {isLoadingVars ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="h-[52px] w-full animate-pulse bg-muted/5" />
+                ))
+              ) : (
+                <AnimatePresence mode='popLayout'>
+                  {filteredVariables.map((variable) => (
+                    <motion.div
+                      key={variable.id}
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="group relative grid grid-cols-[1.5fr_1fr_120px_100px] gap-4 items-center px-4 py-3 hover:bg-muted/10 transition-colors"
+                    >
+                      {/* Name Col */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={cn(
+                          "size-8 rounded-lg flex items-center justify-center border shrink-0",
+                          variable.isSecret ? "bg-amber-500/5 border-amber-500/20 text-amber-500/60" : "bg-primary/5 border-primary/20 text-primary/60"
+                        )}>
+                          {variable.isSecret ? <Key className="size-3.5" /> : <Terminal className="size-3.5" />}
                         </div>
-                        <DropdownMenu>
-                           <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted/50">
-                                 <MoreVertical className="size-4" />
-                              </Button>
-                           </DropdownMenuTrigger>
-                           <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-xl border-border/40">
-                              <DropdownMenuItem onClick={() => copyToClipboard(variable.key, `key-${variable.id}`)}>
-                                 <Copy className="size-4 mr-2" />
-                                 Copy Key
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => copyToClipboard(variable.value, `val-${variable.id}`)}>
-                                 <Copy className="size-4 mr-2" />
-                                 Copy Value
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator className="bg-border/40" />
-                              <DropdownMenuItem className="text-primary" onClick={() => setEditingVariable(variable)}>
-                                 <Edit2 className="size-4 mr-2" />
-                                 Edit Variable
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                 className="text-destructive focus:text-destructive"
-                                 onClick={() => setVariableToDelete({ id: variable.id, key: variable.key })}
-                                 disabled={isDeleting === variable.id}
-                              >
-                                 {isDeleting === variable.id ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Trash2 className="size-4 mr-2" />}
-                                 Delete Variable
-                              </DropdownMenuItem>
-                           </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-
-                    {isDeleting === variable.id && (
-                      <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
-                        <Loader2 className="size-6 animate-spin text-destructive" />
+                        <span className="text-sm font-mono font-bold tracking-tight text-foreground truncate select-all">
+                          {variable.key}
+                        </span>
                       </div>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            )}
 
-            {!isLoadingVars && filteredVariables.length === 0 && (
-              <div className="py-24 flex flex-col items-center justify-center text-center bg-muted/5 rounded-3xl border border-dashed border-border/60">
-                 <div className="size-20 rounded-full bg-muted/20 flex items-center justify-center mb-6">
-                    <Search className="size-10 text-muted-foreground/20" />
-                 </div>
-                 <h3 className="text-xl font-bold text-foreground mb-2 uppercase tracking-tight">No variables found</h3>
-                 <p className="text-sm text-muted-foreground max-w-xs font-medium">
-                    {searchQuery ? `We couldn't find any variables matching "${searchQuery}".` : "This environment is currently empty. Start by adding your first variable."}
-                 </p>
-                 {!searchQuery && (
-                   <Button className="mt-8 px-8 py-6 rounded-2xl shadow-lg shadow-primary/10 group" size="lg" onClick={() => setIsAddDialogOpen(true)}>
-                      <Plus className="size-5 mr-2 transition-transform group-hover:rotate-90" />
+                      {/* Value Col */}
+                      <div className="flex items-center gap-2 min-w-0 h-full">
+                        <div
+                          className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted/40 transition-colors cursor-pointer min-w-0"
+                          onClick={() => {
+                            if (showSecretId !== variable.id) {
+                              setShowSecretId(variable.id)
+                            } else {
+                              copyToClipboard(variable.value, `val-${variable.id}`)
+                            }
+                          }}
+                        >
+                          {showSecretId !== variable.id ? (
+                            <div className="flex gap-1 items-center shrink-0 py-1.5 translate-y-px">
+                              {Array.from({ length: 8 }).map((_, i) => (
+                                <div key={i} className="size-1 rounded-full bg-muted-foreground/30" />
+                              ))}
+                            </div>
+                          ) : (
+                            <code className="text-[11px] font-mono text-muted-foreground truncate select-all">
+                              {variable.value}
+                            </code>
+                          )}
+                        </div>
+
+                        {showSecretId === variable.id && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-muted-foreground/60 hover:text-foreground shrink-0"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setShowSecretId(null)
+                            }}
+                          >
+                            <EyeOff className="size-3.5" />
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Updated Col */}
+                      <div className="hidden md:flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
+                        {new Date(variable.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </div>
+
+                      {/* Actions Col */}
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-8 text-muted-foreground hover:text-foreground"
+                          onClick={() => copyToClipboard(variable.value, `val-${variable.id}`)}
+                          title="Copy Value"
+                        >
+                          <Copy className="size-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-8 text-muted-foreground hover:text-primary"
+                          onClick={() => setEditingVariable(variable)}
+                          title="Edit"
+                        >
+                          <Edit2 className="size-3.5" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="size-8 text-muted-foreground">
+                              <MoreVertical className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => copyToClipboard(variable.key, `key-${variable.id}`)}>
+                              <Copy className="size-4 mr-2" />
+                              Copy Key
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => setVariableToDelete({ id: variable.id, key: variable.key })}
+                            >
+                              <Trash2 className="size-4 mr-2" />
+                              Delete Variable
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )}
+
+              {!isLoadingVars && filteredVariables.length === 0 && (
+                <div className="py-24 flex flex-col items-center justify-center text-center bg-muted/5 border-t border-border/40">
+                  <div className="size-16 rounded-full bg-muted/20 flex items-center justify-center mb-4">
+                    <Search className="size-8 text-muted-foreground/20" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-1 uppercase tracking-tight">No variables found</h3>
+                  <p className="text-sm text-muted-foreground max-w-xs">
+                    {searchQuery ? `Nothing matches "${searchQuery}".` : "Start by adding your first variable."}
+                  </p>
+                  {!searchQuery && (
+                    <Button className="mt-8 font-semibold shadow-lg shadow-primary/10" onClick={() => setIsAddDialogOpen(true)}>
+                      <Plus className="size-4 mr-2" />
                       Add First Variable
-                   </Button>
-                 )}
-              </div>
-            )}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
           </motion.div>
         </div>
       </main>
@@ -594,7 +607,10 @@ export default function EnvironmentDetailsPage() {
         detectedCount={parseEnvText(bulkEditText).length}
         onTextChange={setBulkEditText}
         onSave={saveBulkEdit}
-        onClose={() => { setIsBulkEditDialogOpen(false); setBulkEditText('') }}
+        onClose={() => {
+          setIsBulkEditDialogOpen(false)
+          setBulkEditText('')
+        }}
       />
 
       {environment && (
@@ -618,7 +634,6 @@ export default function EnvironmentDetailsPage() {
           onClose={() => setShowDeleteEnvironment(false)}
         />
       )}
-
     </div>
   )
 }
